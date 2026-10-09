@@ -5,8 +5,8 @@ import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
-  freshRowClass,
-  idClass,
+  rowEnterClass,
+  staggerStyle,
   tableClass,
   tdClass,
   thClass,
@@ -66,20 +66,19 @@ export function ShiftsSection({
     <AdminSection
       id="shifts"
       title="Shifts"
-      description="Every shift across agencies, with its current status."
       error={shifts.data ? shifts.error : null}
       actions={
-        <div role="group" aria-label="Filter shifts by status" className="flex gap-5 text-small">
+        <div role="group" aria-label="Filter shifts by status" className="flex gap-1.5">
           {FILTERS.map((f) => (
             <button
               key={f.value}
               type="button"
               aria-pressed={filter === f.value}
               onClick={() => setFilter(f.value)}
-              className={`rounded-[2px] underline-offset-[6px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
                 filter === f.value
-                  ? "text-ink underline decoration-ink/60"
-                  : "text-muted hover:text-ink"
+                  ? "border-brand bg-brand-soft text-brand-strong"
+                  : "border-border text-muted hover:text-foreground"
               }`}
             >
               {f.label} <span className="tabular-nums">({count(f.value)})</span>
@@ -101,29 +100,25 @@ export function ShiftsSection({
             </tr>
           </thead>
           <tbody>
-            {rows.map((s) => (
-              <tr key={s.id} className={`${trClass} ${fresh.has(s.id) ? freshRowClass : ""}`}>
-                <td className={tdClass}>
-                  <span className={idClass}>{s.id}</span>
-                </td>
+            {rows.map((s, i) => (
+              <tr
+                key={s.id}
+                style={staggerStyle(i)}
+                className={`${trClass} ${fresh.has(s.id) ? "animate-flash" : rowEnterClass}`}
+              >
+                <td className={`${tdClass} font-mono text-xs`}>{s.id}</td>
                 <td className={tdClass}>{s.agencyName}</td>
-                <td className={`${tdClass} font-mono text-small`}>{s.role}</td>
-                <td className={`${tdClass} font-mono text-small whitespace-nowrap`}>{s.date}</td>
-                <td className={`${tdClass} whitespace-nowrap`}>
-                  <span className="font-mono text-small">
-                    {s.startTime}–{s.endTime}
-                  </span>
+                <td className={tdClass}>{s.role}</td>
+                <td className={`${tdClass} whitespace-nowrap tabular-nums`}>{s.date}</td>
+                <td className={`${tdClass} whitespace-nowrap tabular-nums`}>
+                  {s.startTime}–{s.endTime}
                   {isOvernight(s.startTime, s.endTime) && (
-                    <span className="ml-1.5 font-serif text-muted italic">overnight</span>
+                    <span className="ml-2 rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600">
+                      overnight
+                    </span>
                   )}
                 </td>
-                <td className={tdClass}>
-                  {s.claimedBy ? (
-                    <span className={idClass}>{s.claimedBy}</span>
-                  ) : (
-                    <span className="text-muted">—</span>
-                  )}
-                </td>
+                <td className={`${tdClass} font-mono text-xs`}>{s.claimedBy ?? "—"}</td>
                 <td className={tdClass}>
                   <StatusBadge testId="admin-shift-status-badge" status={s.status} />
                 </td>
@@ -131,7 +126,7 @@ export function ShiftsSection({
                   {s.status === "filled" ? (
                     <Button
                       variant="danger"
-                      size="sm"
+                      className="whitespace-nowrap px-2.5 py-1 text-xs"
                       data-testid="shift-cancel-button"
                       disabled={busyId === s.id}
                       aria-label={`Mark no-show for shift ${s.id}`}
@@ -140,7 +135,7 @@ export function ShiftsSection({
                       {busyId === s.id ? "Cancelling…" : "Mark no-show"}
                     </Button>
                   ) : (
-                    <span className="text-muted">—</span>
+                    <span className="text-xs text-muted">—</span>
                   )}
                 </td>
               </tr>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNotify } from "@/components/notification-banner";
-import { Button, Section } from "@/components/ui/primitives";
+import { Button, Card } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
 
 const CONFIRM_WINDOW_MS = 5_000;
@@ -47,11 +47,11 @@ export function ResetSection({ onReset }: { onReset: () => Promise<void> }) {
   }
 
   return (
-    <Section title="Demo data" className="print:hidden">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="max-w-[40rem] text-muted">
+    <Card title="Demo data" className="print:hidden">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-muted">
           Restore the original sample shifts, users and credentials. Everything created since is
-          removed; demo requests are kept.
+          removed.
         </p>
         <Button
           variant="danger"
@@ -62,6 +62,6 @@ export function ResetSection({ onReset }: { onReset: () => Promise<void> }) {
           {pending ? "Resetting…" : armed ? "Click again to confirm" : "Reset demo data"}
         </Button>
       </div>
-    </Section>
+    </Card>
   );
 }

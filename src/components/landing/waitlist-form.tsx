@@ -52,11 +52,27 @@ export function WaitlistForm() {
         ref={doneRef}
         tabIndex={-1}
         role="status"
-        className="animate-fade-in border-l-[3px] border-l-success py-1 pl-4 outline-none"
+        className="flex animate-rise flex-col items-center gap-3 rounded-xl border border-success/25 bg-success-soft/60 px-5 py-8 text-center outline-none"
       >
-        <p className="font-serif text-heading text-ink">You&apos;re on the list.</p>
-        <p className="mt-1 text-muted">
-          Thank you. We&apos;ll be in touch to schedule a walkthrough.
+        <span
+          aria-hidden="true"
+          className="flex size-12 animate-pop items-center justify-center rounded-full bg-success text-white shadow-lift"
+        >
+          <svg viewBox="0 0 16 16" className="size-6" fill="none">
+            <path
+              d="M3.5 8.5l3 3 6-7"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={24}
+              className="animate-draw"
+            />
+          </svg>
+        </span>
+        <p className="font-semibold text-foreground">You&apos;re on the list</p>
+        <p className="text-sm font-medium text-success">
+          Thanks — we&apos;ll be in touch to schedule a walkthrough.
         </p>
       </div>
     );
@@ -86,13 +102,28 @@ export function WaitlistForm() {
         </Select>
       </Field>
       {error && (
-        <p className="text-small text-danger" role="alert">
+        <p className="text-sm text-danger" role="alert">
           {error}
         </p>
       )}
-      <Button type="submit" className="mt-2 w-full sm:w-auto" disabled={state === "sending"}>
-        {state === "sending" ? "Sending…" : "Request a walkthrough"}
+      <Button type="submit" className="w-full" disabled={state === "sending"}>
+        {state === "sending" ? (
+          <>
+            <Spinner /> Sending…
+          </>
+        ) : (
+          "Request a walkthrough"
+        )}
       </Button>
     </form>
+  );
+}
+
+function Spinner() {
+  return (
+    <span
+      aria-hidden="true"
+      className="size-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white motion-reduce:hidden"
+    />
   );
 }

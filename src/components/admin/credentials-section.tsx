@@ -6,8 +6,9 @@ import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
   EmptyState,
-  linkClass,
-  LoadingLine,
+  rowEnterClass,
+  SkeletonList,
+  staggerStyle,
   tableClass,
   tdClass,
   thClass,
@@ -16,7 +17,7 @@ import {
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
 import { track } from "@/lib/analytics";
-import { credentialLabel, daysUntil, expiryHint, formatDateTime } from "./format";
+import { credentialLabel, expiryHint, formatDateTime } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
 import type { CredentialDto, ExpiringCredential, Loadable } from "./types";
 
@@ -73,17 +74,17 @@ export function CredentialsSection({
             </tr>
           </thead>
           <tbody>
-            {rows.map((c) => {
+            {rows.map((c, i) => {
               const isBusy = busy?.id === c.id;
               return (
-                <tr key={c.id} className={trClass}>
+                <tr key={c.id} style={staggerStyle(i)} className={`${trClass} ${rowEnterClass}`}>
                   <td className={tdClass}>{c.nurseName}</td>
                   <td className={tdClass}>{credentialLabel(c.type)}</td>
-                  <td className={`${tdClass} whitespace-nowrap`}>
-                    <span className="font-mono text-small">{c.expiresAt}</span>
-                    <span className="block text-small text-muted">{expiryHint(c.expiresAt)}</span>
+                  <td className={`${tdClass} whitespace-nowrap tabular-nums`}>
+                    {c.expiresAt}
+                    <span className="block text-xs text-muted">{expiryHint(c.expiresAt)}</span>
                   </td>
-                  <td className={`${tdClass} font-mono text-small whitespace-nowrap text-muted`}>
+                  <td className={`${tdClass} whitespace-nowrap text-xs text-muted`}>
                     {formatDateTime(c.uploadedAt)}
                   </td>
                   <td className={tdClass}>
@@ -92,12 +93,12 @@ export function CredentialsSection({
                         href={`/api/credentials/${encodeURIComponent(c.id)}/file`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={linkClass}
+                        className="text-brand underline-offset-2 hover:underline"
                       >
                         View file<span className="sr-only"> for {c.nurseName}</span>
                       </a>
                     ) : (
-                      <span className="font-serif text-muted italic">attestation</span>
+                      <span className="text-xs text-muted">Attestation</span>
                     )}
                   </td>
                   <td className={tdClass}>
@@ -106,7 +107,7 @@ export function CredentialsSection({
                   <td className={tdClass}>
                     <div className="flex gap-2">
                       <Button
-                        size="sm"
+                        className="px-2.5 py-1 text-xs"
                         disabled={isBusy}
                         aria-label={`Verify ${credentialLabel(c.type)} for ${c.nurseName}`}
                         onClick={() => void review(c, "verified")}
@@ -115,7 +116,7 @@ export function CredentialsSection({
                       </Button>
                       <Button
                         variant="danger"
-                        size="sm"
+                        className="px-2.5 py-1 text-xs"
                         disabled={isBusy}
                         aria-label={`Reject ${credentialLabel(c.type)} for ${c.nurseName}`}
                         onClick={() => void review(c, "rejected")}
@@ -137,28 +138,27 @@ export function CredentialsSection({
         </table>
       </TableScroll>
 
-      <div className="mt-10">
-        <h3 className="mb-2 text-lead text-ink">Expiring within 30 days</h3>
+      <div className="mt-6">
+        <h3 className="text-sm font-semibold">Expiring within 30 days</h3>
         {expiringSoon === null ? (
-          <LoadingLine label="Loading expiring credentials…" />
+          <div className="mt-3">
+            <SkeletonList label="Loading expiring credentials…" rows={1} />
+          </div>
         ) : expiringSoon.length === 0 ? (
           <EmptyState>No credentials expire in the next 30 days.</EmptyState>
         ) : (
-          <ul className="border-t border-ink">
+          <ul className="mt-2 divide-y divide-border rounded-lg border border-border">
             {expiringSoon.map((e) => (
               <li
                 key={`${e.nurseId}-${e.type}-${e.expiresAt}`}
-                className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-rule py-3 last:border-0"
+                className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 text-sm"
               >
                 <span>
-                  <span className="text-ink">{e.nurseName}</span>
+                  <span className="font-medium">{e.nurseName}</span>
                   <span className="text-muted"> · {credentialLabel(e.type)}</span>
                 </span>
-                <span
-                  className={(daysUntil(e.expiresAt) ?? 0) < 0 ? "text-danger" : "text-warning"}
-                >
-                  <span className="font-mono text-small">{e.expiresAt}</span>{" "}
-                  <span className="text-small">({expiryHint(e.expiresAt)})</span>
+                <span className="tabular-nums text-warning">
+                  {e.expiresAt} <span className="text-xs">({expiryHint(e.expiresAt)})</span>
                 </span>
               </li>
             ))}

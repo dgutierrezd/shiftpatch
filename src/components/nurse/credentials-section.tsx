@@ -1,7 +1,7 @@
 "use client";
 
 import { StatusBadge } from "@/components/status-badge";
-import { EmptyState, Section } from "@/components/ui/primitives";
+import { Card, EmptyState, rowEnterClass, staggerStyle } from "@/components/ui/primitives";
 import { CredentialUploadForm } from "./credential-upload-form";
 import { CREDENTIAL_LABELS, credentialBadge, formatLongDay } from "./format";
 import { SectionStatus } from "./section-status";
@@ -20,22 +20,23 @@ export function CredentialsSection({
   const list = credentials.data ?? [];
 
   return (
-    <Section title="Credentials" dek="Verified by an admin before they count toward claims.">
+    <Card title="Credentials">
       <SectionStatus resource={credentials} label="credentials" />
       {credentials.data !== null && list.length === 0 ? (
         <div className="mb-5">
           <EmptyState>No credentials on file yet.</EmptyState>
         </div>
       ) : (
-        <ul className="mb-5 border-t border-ink">
-          {list.map((c) => (
+        <ul className="mb-5 divide-y divide-border">
+          {list.map((c, i) => (
             <li
               key={c.id}
-              className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-rule py-3"
+              style={staggerStyle(i)}
+              className={`flex flex-wrap items-center justify-between gap-2 py-2.5 ${rowEnterClass}`}
             >
-              <div className="min-w-0">
-                <p className="font-medium text-ink">{CREDENTIAL_LABELS[c.type] ?? c.type}</p>
-                <p className="text-small break-all text-muted">
+              <div>
+                <p className="text-sm font-medium">{CREDENTIAL_LABELS[c.type] ?? c.type}</p>
+                <p className="text-xs text-muted">
                   Expires {formatLongDay(c.expiresAt)}
                   {c.fileName ? ` · ${c.fileName}` : ""}
                 </p>
@@ -45,10 +46,10 @@ export function CredentialsSection({
           ))}
         </ul>
       )}
-      <div className="pt-4">
-        <h3 className="mb-4 text-lead text-ink">Add or renew a credential</h3>
+      <div className="border-t border-border pt-5">
+        <h3 className="mb-3 text-sm font-semibold">Add or renew a credential</h3>
         <CredentialUploadForm today={today} onChanged={onChanged} />
       </div>
-    </Section>
+    </Card>
   );
 }

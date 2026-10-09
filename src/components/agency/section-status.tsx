@@ -1,4 +1,4 @@
-import { EmptyRow, LoadingRow } from "@/components/ui/primitives";
+import { EmptyRow, SkeletonRows } from "@/components/ui/primitives";
 
 /** Loading / error / empty row for a table body, so the table header always renders. */
 export function StatusRow({
@@ -21,6 +21,6 @@ export function StatusRow({
       </EmptyRow>
     );
   }
-  if (loading) return <LoadingRow colSpan={colSpan} label="Loading…" />;
+  if (loading) return <SkeletonRows colSpan={colSpan} label="Loading…" />;
   return <EmptyRow colSpan={colSpan}>{empty}</EmptyRow>;
 }

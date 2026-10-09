@@ -103,7 +103,7 @@ export function CredentialUploadForm({
             data-testid="credential-upload-input"
             accept="application/pdf,image/png,image/jpeg"
             disabled={isTb}
-            className="block w-full text-small text-muted file:mr-3 file:h-9 file:rounded-md file:border file:border-rule file:bg-paper file:px-3 file:text-[0.875rem] file:font-medium file:text-ink hover:file:border-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-55"
+            className="block w-full text-sm text-muted file:mr-3 file:rounded-md file:border file:border-border file:bg-surface file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-foreground hover:file:bg-slate-50 disabled:opacity-50"
           />
         </Field>
         <Field label="Expiry date" htmlFor="credential-expiry">
@@ -118,13 +118,18 @@ export function CredentialUploadForm({
         </Field>
       </div>
       {error && (
-        <p className="text-small text-danger" role="alert">
+        <p className="text-sm text-danger" role="alert">
           {error}
         </p>
       )}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Submitting…" : "Submit for verification"}
-      </Button>
+      <div className="flex flex-wrap items-center gap-3">
+        <Button type="submit" disabled={pending}>
+          {pending ? "Submitting…" : "Submit for verification"}
+        </Button>
+        <p className="text-xs text-muted">
+          An admin verifies each upload before it counts toward claiming shifts.
+        </p>
+      </div>
     </form>
   );
 }

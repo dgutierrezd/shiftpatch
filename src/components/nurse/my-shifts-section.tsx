@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
-import { Button, EmptyState, freshRowClass, Section } from "@/components/ui/primitives";
+import { Button, Card, EmptyState, rowEnterClass, staggerStyle } from "@/components/ui/primitives";
 import { useFreshIds } from "@/components/ui/use-fresh-ids";
 import { api, errorMessage } from "@/lib/api-client";
 import { track } from "@/lib/analytics";
@@ -43,17 +43,18 @@ export function MyShiftsSection({
   }
 
   return (
-    <Section title="My shifts" dek="Shifts you hold. Cancelling ahead of time reopens the shift.">
+    <Card title="My shifts">
       <SectionStatus resource={shifts} label="your shifts" />
       {shifts.data !== null && mine.length === 0 ? (
         <EmptyState>You haven&apos;t claimed any upcoming shifts yet.</EmptyState>
       ) : (
-        <ul className="border-t border-ink">
-          {mine.map((shift) => (
+        <ul className="divide-y divide-border">
+          {mine.map((shift, i) => (
             <li
               key={shift.id}
-              className={`flex flex-col gap-3 border-b border-rule py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between ${
-                fresh.has(shift.id) ? freshRowClass : ""
+              style={staggerStyle(i)}
+              className={`-mx-2 flex flex-col gap-3 rounded-lg px-2 py-3 sm:flex-row sm:items-center sm:justify-between ${
+                fresh.has(shift.id) ? "animate-flash" : rowEnterClass
               }`}
             >
               <ShiftSummary shift={shift} />
@@ -63,7 +64,7 @@ export function MyShiftsSection({
                 onClick={() => cancel(shift.id)}
                 disabled={cancellingId === shift.id}
                 aria-label={`Cancel ${shift.role} shift at ${shift.agencyName} on ${shift.date}`}
-                className="self-start sm:self-auto"
+                className="shrink-0"
               >
                 {cancellingId === shift.id ? "Cancelling…" : "Cancel shift"}
               </Button>
@@ -71,6 +72,6 @@ export function MyShiftsSection({
           ))}
         </ul>
       )}
-    </Section>
+    </Card>
   );
 }

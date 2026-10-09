@@ -1,138 +1,258 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Logo } from "@/components/brand/logo";
-import { TonightsBoard } from "@/components/landing/tonights-board";
+import { BoardPreview } from "@/components/landing/board-preview";
 import { WaitlistForm } from "@/components/landing/waitlist-form";
-import { focusRing, linkClass } from "@/components/ui/primitives";
+import { staggerStyle } from "@/components/ui/primitives";
 
-const STEPS = [
+const STEPS: { title: string; body: string; icon: ReactNode }[] = [
   {
-    title: "Post the shift",
-    body: "Role, date and hours. Overnight shifts that end the next morning are handled for you.",
+    title: "Post an open shift in seconds",
+    body: "Role, date and hours — that's it. Overnight shifts are handled automatically.",
+    icon: <path d="M12 5v14M5 12h14" strokeWidth={2} strokeLinecap="round" stroke="currentColor" />,
   },
   {
-    title: "A qualified nurse claims it",
-    body: "The claim is checked against the nurse’s license and TB screening at that moment. Lapsed credentials stop it, with a clear reason.",
+    title: "Only qualified nurses can pick it up",
+    body: "A nurse whose license or TB screening has lapsed is stopped before the claim goes through.",
+    icon: (
+      <path
+        d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3Zm-3 9 2 2 4-4"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        stroke="currentColor"
+        fill="none"
+      />
+    ),
   },
   {
-    title: "Coverage stays current",
-    body: "Your board shows what is open, what is filled and by whom. A cancellation puts the shift straight back on it.",
+    title: "See coverage as it happens",
+    body: "One live board shows which shifts are open, which are filled, and by whom.",
+    icon: (
+      <path
+        d="M4 19V9m5 10V5m5 14v-7m5 7V8"
+        strokeWidth={2}
+        strokeLinecap="round"
+        stroke="currentColor"
+      />
+    ),
   },
 ];
+
+const PROOF_POINTS = [
+  {
+    title: "Cancellations reopen instantly",
+    body: "No-shows and cancellations put the shift straight back on the board.",
+  },
+  {
+    title: "A full audit trail",
+    body: "Every action is recorded: who did what, and when.",
+  },
+  {
+    title: "Timesheets on autopilot",
+    body: "A timesheet is created for every filled shift, ready for approval.",
+  },
+  {
+    title: "Inspection-ready reports",
+    body: "Credential status for surveyors — without exporting medical records.",
+  },
+];
+
+function CheckDot() {
+  return (
+    <span
+      aria-hidden="true"
+      className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-strong"
+    >
+      <svg viewBox="0 0 16 16" className="size-3" fill="none">
+        <path
+          d="M3.5 8.5l3 3 6-7"
+          stroke="currentColor"
+          strokeWidth={2.2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  );
+}
 
 export default function HomePage() {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="border-b border-rule">
-        <div className="mx-auto flex max-w-[1100px] items-center justify-between px-5 py-4 sm:px-8">
-          <Link href="/" className={`rounded-[2px] ${focusRing}`}>
-            <Logo />
-          </Link>
-          <nav aria-label="Main" className="flex items-center gap-6 text-[0.875rem]">
+      <header className="sticky top-0 z-40 border-b border-border/70 bg-surface/80 backdrop-blur supports-[backdrop-filter]:bg-surface/65">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <Logo />
+          <nav aria-label="Main" className="flex items-center gap-1 text-sm sm:gap-2">
             <a
               href="#how"
-              className={`hidden text-muted transition-colors hover:text-ink sm:inline ${focusRing} rounded-[2px]`}
+              className="hidden rounded-md px-3 py-2 text-muted transition-colors hover:text-foreground sm:inline-block"
             >
               How it works
             </a>
-            <Link href="/login" className={`text-ink hover:text-accent ${focusRing} rounded-[2px]`}>
+            <Link
+              href="/login"
+              className="rounded-md border border-border bg-surface px-3.5 py-2 font-medium shadow-xs transition-[background-color,transform] hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand active:scale-[0.97]"
+            >
               Sign in
             </Link>
           </nav>
         </div>
       </header>
 
-      <main className="flex-1 animate-fade-in">
-        <div className="mx-auto max-w-[1100px] px-5 sm:px-8">
-          {/* Hero */}
-          <section className="pt-14 pb-16 sm:pt-24 sm:pb-20">
-            <h1 className="max-w-[18ch] text-[2.5rem] leading-[1.04] font-normal tracking-[-0.02em] text-balance text-ink sm:text-[4rem]">
-              Fill last-minute nursing shifts <em className="italic">without the phone tree.</em>
-            </h1>
-            <p className="mt-6 max-w-[36rem] text-lead text-muted">
-              ShiftPatch posts your open shifts to qualified nurses, stops anyone whose credentials
-              have lapsed, and keeps one current record of who is covering what.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
-              <a
-                href="#walkthrough"
-                className={`inline-flex h-10 items-center rounded-md bg-accent px-4 text-[0.9375rem] font-medium text-white transition-colors hover:bg-accent-hover ${focusRing}`}
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="relative isolate overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(40rem_28rem_at_10%_-10%,rgb(20_184_166/0.18),transparent_70%),radial-gradient(36rem_26rem_at_95%_10%,rgb(99_102_241/0.12),transparent_70%),radial-gradient(30rem_22rem_at_60%_110%,rgb(16_185_129/0.12),transparent_70%)]"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgb(15_23_42/0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgb(15_23_42/0.05)_1px,transparent_1px)] mask-[radial-gradient(ellipse_at_center,black_30%,transparent_75%)] bg-size-[40px_40px]"
+          />
+          <div className="mx-auto grid max-w-6xl gap-12 px-4 pt-14 pb-16 md:grid-cols-[1.1fr_1fr] md:items-center md:pt-20 md:pb-24">
+            <div className="space-y-6">
+              <p
+                style={staggerStyle(0)}
+                className="inline-flex animate-rise stagger items-center gap-2 rounded-full border border-brand/20 bg-surface/80 px-3 py-1 text-xs font-semibold text-brand-strong shadow-xs"
               >
-                Request a walkthrough
-              </a>
-              <Link href="/login" className={`text-[0.9375rem] ${linkClass}`}>
-                Try the demo →
-              </Link>
-            </div>
-          </section>
-
-          <TonightsBoard />
-
-          {/* How it works */}
-          <section id="how" className="scroll-mt-8 pt-24">
-            <div className="grid gap-4 border-t border-rule pt-6 md:grid-cols-[1fr_2fr] md:gap-12">
-              <div>
-                <h2 className="text-title text-ink">How it works</h2>
-                <p className="mt-2 text-muted">From open shift to covered shift, without a call.</p>
+                <span className="size-1.5 rounded-full bg-brand" aria-hidden="true" />
+                For hospital operations &amp; staffing teams
+              </p>
+              <h1
+                style={staggerStyle(1)}
+                className="animate-rise stagger text-4xl leading-[1.1] font-bold tracking-tight text-balance md:text-5xl lg:text-[3.5rem]"
+              >
+                Fill last-minute nursing shifts{" "}
+                <span className="bg-linear-to-r from-brand to-teal-600 bg-clip-text text-transparent">
+                  without the phone tree.
+                </span>
+              </h1>
+              <p
+                style={staggerStyle(2)}
+                className="max-w-xl animate-rise stagger text-lg text-pretty text-muted"
+              >
+                ShiftPatch posts your open shifts to qualified nurses, blocks anyone with lapsed
+                credentials, and keeps a live view of who is covering what.
+              </p>
+              <div
+                style={staggerStyle(3)}
+                className="flex animate-rise stagger flex-wrap items-center gap-3"
+              >
+                <a
+                  href="#walkthrough"
+                  className="inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,box-shadow,transform] hover:bg-brand-strong hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand active:scale-[0.97]"
+                >
+                  Request a walkthrough
+                  <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4" fill="none">
+                    <path
+                      d="M3 8h10m-4-4 4 4-4 4"
+                      stroke="currentColor"
+                      strokeWidth={1.8}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </a>
+                <Link
+                  href="/login"
+                  className="rounded-md px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-slate-900/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  Try the demo
+                </Link>
               </div>
-              <ol className="grid gap-8 sm:grid-cols-3 sm:gap-8">
-                {STEPS.map((step, i) => (
-                  <li key={step.title}>
-                    <span className="figure block text-title leading-none text-accent">
-                      {i + 1}
+            </div>
+            <div style={staggerStyle(3)} className="animate-rise stagger">
+              <BoardPreview />
+            </div>
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section id="how" className="scroll-mt-16 border-y border-border bg-surface">
+          <div className="mx-auto max-w-6xl px-4 py-16">
+            <div className="max-w-2xl">
+              <p className="text-sm font-semibold text-brand">How it works</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">
+                From open shift to covered shift, without a single phone call.
+              </h2>
+            </div>
+            <ol className="mt-10 grid gap-5 md:grid-cols-3">
+              {STEPS.map((step, i) => (
+                <li
+                  key={step.title}
+                  className="group relative rounded-xl border border-border bg-background/60 p-6 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-brand/30 hover:bg-surface hover:shadow-lift"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="flex size-10 items-center justify-center rounded-lg bg-brand-soft text-brand-strong transition-transform duration-200 group-hover:scale-105">
+                      <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none">
+                        {step.icon}
+                      </svg>
                     </span>
-                    <h3 className="mt-4 text-[1.1875rem] leading-snug font-medium text-balance text-ink">
-                      {step.title}
-                    </h3>
-                    <p className="mt-1.5 text-muted">{step.body}</p>
+                    <span className="font-mono text-xs text-muted">Step {i + 1}</span>
+                  </div>
+                  <h3 className="mt-5 font-semibold">{step.title}</h3>
+                  <p className="mt-1.5 text-sm text-muted">{step.body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* Trust + waitlist */}
+        <section id="walkthrough" className="scroll-mt-16">
+          <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 md:grid-cols-[1fr_1fr] md:items-start md:py-20">
+            <div>
+              <p className="text-sm font-semibold text-brand">Built for compliance</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">
+                Coverage you can defend in an inspection.
+              </h2>
+              <p className="mt-3 text-muted">
+                Credential checks happen at the moment of the claim, and every step leaves a trail
+                your compliance team can read.
+              </p>
+              <ul className="mt-8 grid gap-5 sm:grid-cols-2">
+                {PROOF_POINTS.map((point) => (
+                  <li key={point.title} className="flex gap-3">
+                    <CheckDot />
+                    <div>
+                      <p className="text-sm font-semibold">{point.title}</p>
+                      <p className="mt-0.5 text-sm text-muted">{point.body}</p>
+                    </div>
                   </li>
                 ))}
-              </ol>
+              </ul>
             </div>
-          </section>
-
-          {/* Compliance */}
-          <section className="pt-20">
-            <div className="grid gap-4 border-t border-rule pt-6 md:grid-cols-[1fr_2fr] md:gap-12">
-              <div>
-                <h2 className="text-title text-ink">Built for compliance</h2>
-                <p className="mt-2 text-muted">Coverage you can stand behind in an inspection.</p>
-              </div>
-              <div className="max-w-[40rem] space-y-4 text-lead text-ink">
-                <p>
-                  Credential checks happen at the moment of each claim, not at onboarding and never
-                  again. Every post, claim, cancellation and approval is written to an audit trail
-                  that names who did it and when.
+            <div className="relative">
+              <div
+                aria-hidden="true"
+                className="absolute -inset-3 -z-10 rounded-3xl bg-linear-to-br from-brand/15 via-teal-200/20 to-indigo-200/25 blur-2xl"
+              />
+              <div className="rounded-2xl border border-border bg-surface p-6 shadow-lift sm:p-8">
+                <h2 className="text-lg font-semibold tracking-tight">
+                  Is short-notice staffing a headache for you too?
+                </h2>
+                <p className="mt-1 text-sm text-muted">
+                  We&apos;re talking to operations managers and staffing directors before launch.
+                  Leave your details and we&apos;ll show you a walkthrough.
                 </p>
-                <p className="text-muted">
-                  When a surveyor asks, an admin generates an inspection report of license and
-                  TB-screening status for each nurse. The report is itself audited, and it is not an
-                  export of medical records: no documents or health data leave the system.
-                </p>
+                <div className="mt-6">
+                  <WaitlistForm />
+                </div>
               </div>
             </div>
-          </section>
-
-          {/* Waitlist */}
-          <section id="walkthrough" className="scroll-mt-8 pt-20 pb-24">
-            <div className="grid gap-8 border-t border-rule pt-6 md:grid-cols-[1fr_2fr] md:gap-12">
-              <div>
-                <h2 className="text-title text-ink">Request a walkthrough</h2>
-                <p className="mt-2 text-muted">
-                  We&apos;re speaking with operations managers and staffing directors before launch.
-                </p>
-              </div>
-              <div className="max-w-[32rem] rounded-md border border-rule bg-surface p-6 sm:p-8">
-                <WaitlistForm />
-              </div>
-            </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </main>
 
-      <footer className="border-t border-rule">
-        <div className="mx-auto flex max-w-[1100px] flex-col gap-2 px-5 py-6 text-small text-muted sm:flex-row sm:justify-between sm:px-8">
-          <span>ShiftPatch</span>
-          <p>A pre-launch concept. Demo data only; no real patient or nurse information.</p>
+      <footer className="border-t border-border bg-surface">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+          <Logo className="scale-90 origin-left" />
+          <p>
+            ShiftPatch is a pre-launch concept. Demo data only — no real patient or nurse
+            information.
+          </p>
         </div>
       </footer>
     </div>

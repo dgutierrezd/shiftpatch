@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import { EmptyRow, LoadingRow, Note, Section } from "@/components/ui/primitives";
+import { Card, EmptyRow, SkeletonRows } from "@/components/ui/primitives";
 import type { Loadable } from "./types";
 
-/** In-page anchor target: an editorial section with a heading, a dek and its content. */
+/** In-page anchor target wrapping a Card; `scroll-mt` keeps the heading visible after a jump. */
 export function AdminSection({
   id,
   title,
@@ -22,25 +22,28 @@ export function AdminSection({
   children: ReactNode;
 }) {
   return (
-    <Section id={id} title={title} dek={description} actions={actions} className={className}>
-      {error && (
-        <Note tone="danger" role="alert" className="mb-4">
-          Couldn’t refresh: {error}
-        </Note>
-      )}
-      {children}
-    </Section>
+    <div id={id} className={`scroll-mt-16 ${className}`}>
+      <Card title={title} actions={actions}>
+        {description && <p className="mb-4 text-sm text-muted">{description}</p>}
+        {error && (
+          <p role="alert" className="mb-4 rounded-md bg-danger-soft px-3 py-2 text-sm text-danger">
+            Couldn’t refresh: {error}
+          </p>
+        )}
+        {children}
+      </Card>
+    </div>
   );
 }
 
 /**
  * Tables scroll horizontally on narrow screens instead of breaking the layout. With
- * `tall`, long tables also scroll vertically (pair with a sticky thead).
+ * `tall`, long tables also scroll vertically inside the card (pair with a sticky thead).
  */
 export function TableScroll({ children, tall = false }: { children: ReactNode; tall?: boolean }) {
   return (
     <div
-      className={`relative overflow-x-auto rounded-[2px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${tall ? "max-h-[36rem] overflow-y-auto overscroll-contain" : ""}`}
+      className={`-mx-5 overflow-x-auto px-5 ${tall ? "max-h-[36rem] overflow-y-auto overscroll-contain" : ""}`}
       tabIndex={0}
       role="group"
       aria-label="Scrollable table"
@@ -51,7 +54,7 @@ export function TableScroll({ children, tall = false }: { children: ReactNode; t
 }
 
 /**
- * Body placeholder for a table that must always render (header + a status row): shows the
+ * Body placeholder for a table that must always render (header + EmptyRow): shows the
  * loading, error or empty message. Returns null once there are rows to show.
  */
 export function TableStatus<T>({
@@ -67,7 +70,7 @@ export function TableStatus<T>({
 }) {
   if (rows > 0) return null;
   if (resource.data === null && resource.error === null)
-    return <LoadingRow colSpan={colSpan} label="Loading…" />;
+    return <SkeletonRows colSpan={colSpan} label="Loading…" />;
   if (resource.data === null)
     return <EmptyRow colSpan={colSpan}>Couldn’t load: {resource.error}</EmptyRow>;
   return <EmptyRow colSpan={colSpan}>{empty}</EmptyRow>;

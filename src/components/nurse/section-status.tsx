@@ -1,4 +1,4 @@
-import { LoadingLine, Note } from "@/components/ui/primitives";
+import { SkeletonList } from "@/components/ui/primitives";
 import type { Resource } from "./use-resource";
 
 /**
@@ -8,20 +8,21 @@ import type { Resource } from "./use-resource";
 export function SectionStatus<T>({ resource, label }: { resource: Resource<T>; label: string }) {
   if (resource.error) {
     return (
-      <Note tone="danger" role="alert" className="mb-4">
-        Couldn&apos;t load {label}: {resource.error}.{" "}
-        <button
-          type="button"
-          onClick={resource.reload}
-          className="text-accent underline underline-offset-[3px]"
-        >
+      <div
+        role="alert"
+        className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-danger"
+      >
+        <span>
+          Couldn&apos;t load {label}: {resource.error}
+        </span>
+        <button type="button" onClick={resource.reload} className="font-medium underline">
           Try again
         </button>
-      </Note>
+      </div>
     );
   }
   if (resource.loading && resource.data === null) {
-    return <LoadingLine label={`Loading ${label}…`} />;
+    return <SkeletonList label={`Loading ${label}…`} rows={2} />;
   }
   return null;
 }
