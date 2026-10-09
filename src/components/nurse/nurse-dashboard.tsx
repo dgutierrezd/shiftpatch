@@ -54,18 +54,15 @@ export function NurseDashboard() {
     credentials.data !== null && !hasValidCredentials(credentials.data, today);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-xs font-semibold tracking-wide text-brand uppercase">Nurse</p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
-          Hi, {user.name.split(" ")[0]}
-        </h1>
-        <p className="mt-1 text-sm text-muted">
+    <div>
+      <header className="mb-12">
+        <h1 className="text-title text-ink sm:text-display">{user.name}</h1>
+        <p className="mt-2 max-w-[40rem] text-lead text-muted">
           Pick up open shifts, manage the ones you hold, and keep your credentials current.
         </p>
-      </div>
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="min-w-0 space-y-6 lg:col-span-2">
+      </header>
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-12">
+        <div className="min-w-0 space-y-14">
           <OpenShiftsSection
             shifts={shifts}
             credentialsNeedAttention={credentialsNeedAttention}
@@ -74,7 +71,7 @@ export function NurseDashboard() {
           <MyShiftsSection userId={user.id} shifts={shifts} onChanged={refreshAll} />
           <TimesheetsSection timesheets={timesheets} onChanged={refreshAll} />
         </div>
-        <div className="min-w-0 space-y-6">
+        <div className="min-w-0 space-y-14">
           <CredentialsSection credentials={credentials} today={today} onChanged={refreshAll} />
           <NotificationsSection notifications={notifications} onChanged={refreshAll} />
         </div>

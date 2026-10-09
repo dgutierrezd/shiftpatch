@@ -5,12 +5,11 @@ import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
-  Card,
   EmptyRow,
   Input,
-  rowEnterClass,
-  SkeletonRows,
-  staggerStyle,
+  LoadingRow,
+  numClass,
+  Section,
   tableClass,
   tdClass,
   theadClass,
@@ -25,6 +24,7 @@ import type { TimesheetDto } from "./types";
 import type { Resource } from "./use-resource";
 
 const COLUMNS = ["Shift", "Agency", "Scheduled", "Worked", "Status", "Action"];
+const NUMERIC = new Set(["Scheduled", "Worked"]);
 
 function SubmitHours({ sheet, onChanged }: { sheet: TimesheetDto; onChanged: () => void }) {
   const notify = useNotify();
@@ -72,9 +72,9 @@ function SubmitHours({ sheet, onChanged }: { sheet: TimesheetDto; onChanged: () 
         step={0.25}
         value={hours}
         onChange={(e) => setHours(e.target.value)}
-        className="w-20"
+        className="h-8 w-20 text-right font-mono text-small tabular-nums"
       />
-      <Button type="submit" variant="secondary" disabled={pending}>
+      <Button type="submit" variant="secondary" size="sm" className="h-8" disabled={pending}>
         {pending ? "Submitting…" : "Submit"}
       </Button>
     </form>
@@ -91,14 +91,14 @@ export function TimesheetsSection({
 }) {
   const rows = timesheets.data ?? [];
   return (
-    <Card title="Timesheets">
+    <Section title="Timesheets" dek="Submit the hours you worked; the agency approves them.">
       {timesheets.error && <SectionStatus resource={timesheets} label="timesheets" />}
       <div className="overflow-x-auto">
         <table data-testid="timesheet-table" className={tableClass}>
           <thead className={theadClass}>
             <tr>
               {COLUMNS.map((c) => (
-                <th key={c} scope="col" className={thClass}>
+                <th key={c} scope="col" className={`${thClass} ${NUMERIC.has(c) ? numClass : ""}`}>
                   {c}
                 </th>
               ))}
@@ -107,25 +107,27 @@ export function TimesheetsSection({
           <tbody>
             {rows.length === 0 ? (
               timesheets.data === null && !timesheets.error ? (
-                <SkeletonRows colSpan={COLUMNS.length} label="Loading timesheets…" rows={2} />
+                <LoadingRow colSpan={COLUMNS.length} label="Loading timesheets…" />
               ) : (
                 <EmptyRow colSpan={COLUMNS.length}>
                   No timesheets yet. They appear here once you work a claimed shift.
                 </EmptyRow>
               )
             ) : (
-              rows.map((t, i) => (
-                <tr key={t.id} style={staggerStyle(i)} className={`${trClass} ${rowEnterClass}`}>
+              rows.map((t) => (
+                <tr key={t.id} className={trClass}>
                   <td className={tdClass}>
-                    <span className="font-medium">{formatDay(t.date)}</span>
-                    <span className="block text-xs text-muted">
+                    <span className="font-medium whitespace-nowrap">{formatDay(t.date)}</span>
+                    <span className="block font-mono text-small whitespace-nowrap text-muted">
                       {t.startTime}–{t.endTime}
-                      {isOvernight(t.startTime, t.endTime) ? " · overnight" : ""}
+                      {isOvernight(t.startTime, t.endTime) && (
+                        <span className="ml-1.5 font-serif italic">overnight</span>
+                      )}
                     </span>
                   </td>
                   <td className={tdClass}>{t.agencyName}</td>
-                  <td className={tdClass}>{formatHours(t.scheduledHours)}</td>
-                  <td className={tdClass}>
+                  <td className={`${tdClass} ${numClass}`}>{formatHours(t.scheduledHours)}</td>
+                  <td className={`${tdClass} ${numClass}`}>
                     {t.workedHours === null ? "—" : formatHours(t.workedHours)}
                   </td>
                   <td className={tdClass}>
@@ -135,7 +137,7 @@ export function TimesheetsSection({
                     {t.status === "pending" ? (
                       <SubmitHours sheet={t} onChanged={onChanged} />
                     ) : (
-                      <span className="text-xs text-muted">—</span>
+                      <span className="text-muted">—</span>
                     )}
                   </td>
                 </tr>
@@ -144,6 +146,6 @@ export function TimesheetsSection({
           </tbody>
         </table>
       </div>
-    </Card>
+    </Section>
   );
 }
