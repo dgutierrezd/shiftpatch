@@ -9,9 +9,12 @@ export function computeKpis(shifts: ShiftDto[]) {
 
 function Kpi({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-border bg-surface px-4 py-3 shadow-sm">
-      <dt className="text-xs font-medium uppercase tracking-wide text-muted">{label}</dt>
-      <dd className="mt-1 text-2xl font-semibold tabular-nums">{value}</dd>
+    <div className="rounded-xl border border-border bg-surface px-4 py-3 shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lift">
+      <dt className="text-xs font-medium tracking-wide text-muted uppercase">{label}</dt>
+      {/* Re-keyed on change so a new value ticks in. */}
+      <dd key={value} className="mt-1 animate-tick text-2xl font-semibold tabular-nums">
+        {value}
+      </dd>
     </div>
   );
 }

@@ -67,7 +67,8 @@ function AgencyDashboardContent() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Shifts</h1>
+            <p className="text-xs font-semibold tracking-wide text-brand uppercase">Agency</p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Shifts</h1>
             <p className="text-sm text-muted">
               Post open shifts and manage who&apos;s covering them.
             </p>
@@ -81,6 +82,14 @@ function AgencyDashboardContent() {
           data-testid="agency-post-shift-button"
           className="self-start lg:self-end"
         >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            className={`size-4 transition-transform duration-200 ${formOpen ? "rotate-45" : ""}`}
+            fill="none"
+          >
+            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+          </svg>
           Post a shift
         </Button>
       </div>

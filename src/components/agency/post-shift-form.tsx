@@ -50,7 +50,7 @@ export function PostShiftForm({ onPosted }: { onPosted: () => void }) {
   }
 
   return (
-    <div id={POST_SHIFT_FORM_ID}>
+    <div id={POST_SHIFT_FORM_ID} className="animate-rise">
       <Card title="Post a new shift">
         <form onSubmit={onSubmit} noValidate className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -6,13 +6,16 @@ import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
   Card,
+  rowEnterClass,
   Select,
+  staggerStyle,
   tableClass,
   tdClass,
   thClass,
   theadClass,
   trClass,
 } from "@/components/ui/primitives";
+import { useFreshIds } from "@/components/ui/use-fresh-ids";
 import { api, errorMessage } from "@/lib/api-client";
 import { track } from "@/lib/analytics";
 import { CANCELLATION_REASONS } from "@/lib/validation";
@@ -110,6 +113,7 @@ export function ShiftsTable({
   onChanged: () => void;
 }) {
   const sorted = shifts ? [...shifts].sort(compareShifts) : [];
+  const fresh = useFreshIds(shifts?.map((s) => s.id));
 
   return (
     <Card title="Your shifts">
@@ -134,8 +138,12 @@ export function ShiftsTable({
                 empty="No shifts posted yet. Use “Post a shift” to add one."
               />
             ) : (
-              sorted.map((shift) => (
-                <tr key={shift.id} className={trClass}>
+              sorted.map((shift, i) => (
+                <tr
+                  key={shift.id}
+                  style={staggerStyle(i)}
+                  className={`${trClass} ${fresh.has(shift.id) ? "animate-flash" : rowEnterClass}`}
+                >
                   <td className={`${tdClass} whitespace-nowrap`}>{formatShiftDate(shift.date)}</td>
                   <td className={tdClass}>
                     <ShiftTime startTime={shift.startTime} endTime={shift.endTime} />
