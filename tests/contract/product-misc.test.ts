@@ -4,6 +4,7 @@ import { GET as me } from "@/app/api/auth/me/route";
 import { POST as logout } from "@/app/api/auth/logout/route";
 import { GET as notificationsList } from "@/app/api/notifications/route";
 import { POST as markRead } from "@/app/api/notifications/[id]/read/route";
+import { GET as demoRequestsGet } from "@/app/api/admin/demo-requests/route";
 import { POST as waitlistPost } from "@/app/api/waitlist/route";
 import { GET as deliverEmail } from "@/app/api/cron/deliver-email/route";
 import { notifications, users, waitlist } from "@/server/db/schema";
@@ -207,5 +208,40 @@ describe("email outbox", () => {
     const ok = await call("cron-secret-value");
     expect(ok.status).toBe(200);
     expect(await ok.json()).toEqual({ sent: 0, skipped: 0, failed: 0 });
+  });
+});
+
+describe("GET /api/admin/demo-requests", () => {
+  it("lists demo requests newest first for admins only", async () => {
+    await waitlistPost(
+      apiRequest("/api/waitlist", {
+        method: "POST",
+        body: { email: "ops@hospital.example", role: "Staffing director" },
+      }),
+      undefined,
+    );
+    const res = await demoRequestsGet(
+      apiRequest("/api/admin/demo-requests", { token: t.admin }),
+      undefined,
+    );
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { requests: Array<Record<string, unknown>> };
+    expect(body.requests).toHaveLength(1);
+    expect(body.requests[0]).toMatchObject({
+      email: "ops@hospital.example",
+      role: "Staffing director",
+      organization: null,
+    });
+
+    for (const token of [t.nurse1, t.agencyA]) {
+      const denied = await demoRequestsGet(
+        apiRequest("/api/admin/demo-requests", { token }),
+        undefined,
+      );
+      expect(denied.status).toBe(403);
+    }
+    expect((await demoRequestsGet(apiRequest("/api/admin/demo-requests"), undefined)).status).toBe(
+      401,
+    );
   });
 });

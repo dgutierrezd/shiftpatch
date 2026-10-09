@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { users, waitlist } from "@/server/db/schema";
 import { reseed } from "@/server/db/seed";
 import type { Db } from "@/server/db/types";
@@ -29,6 +29,27 @@ export async function joinWaitlist(db: Db, input: WaitlistInput): Promise<boolea
     .onConflictDoNothing({ target: waitlist.email })
     .returning({ id: waitlist.id });
   return inserted.length > 0;
+}
+
+export interface DemoRequestDto {
+  id: string;
+  email: string;
+  organization: string | null;
+  role: string | null;
+  createdAt: string;
+}
+
+/** Demo requests from the public page, newest first — the founder's demand signal. */
+export async function listDemoRequests(db: Db, actor: Actor): Promise<DemoRequestDto[]> {
+  if (actor.role !== "admin") throw forbidden();
+  const rows = await db.select().from(waitlist).orderBy(desc(waitlist.createdAt)).limit(500);
+  return rows.map((r) => ({
+    id: r.id,
+    email: r.email,
+    organization: r.organization,
+    role: r.role,
+    createdAt: r.createdAt.toISOString(),
+  }));
 }
 
 /** The current account as stored, so a token for a since-deleted user stops working. */

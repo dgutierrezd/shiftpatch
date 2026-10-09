@@ -52,5 +52,6 @@ Only `verified` records count toward claim eligibility.
 | `GET /api/admin/report` | admin | `{ totals: { open, filled, cancelled, total }, fillRate, cancellationsByReason: { "no-show", "advance" }, credentialsExpiringSoon: [{ nurseId, nurseName, type, expiresAt }], pendingCredentialReviews, byAgency: [{ agencyId, agencyName, open, filled }] }` |
 | `POST /api/admin/compliance-report` | admin | body `{ reason, nurseIds? }` → `{ generatedAt, generatedBy, reason, nurses: [{ nurseId, name, licenseNumber, licenseExpiresAt, licenseStatus, tbScreeningExpiresAt, tbStatus, eligibleToday }] }` (audited) |
 | `POST /api/admin/reset` | admin, `ALLOW_DEMO_RESET=true` | restores spec sample data |
+| `GET /api/admin/demo-requests` | admin | `{ requests: [{ id, email, organization, role, createdAt }] }` newest first (kept across demo resets) |
 | `POST /api/waitlist` | public | `{ email, organization?, role? }` → 201 |
 | `GET /api/cron/deliver-email` | `Bearer CRON_SECRET` | delivers queued notification emails |
