@@ -31,8 +31,8 @@ export function WaitlistForm() {
           role: role || undefined,
         },
       });
-      // Only the self-reported role goes to analytics — never the email or organization.
-      track("demo_requested", { role: role || "unspecified" });
+      // Only an allow-listed role goes to analytics — never the email or organization.
+      track("demo_requested", { role: ROLES.includes(role) ? role : "unspecified" });
       setState("done");
     } catch (err) {
       setError(errorMessage(err));

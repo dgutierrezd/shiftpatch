@@ -24,6 +24,17 @@ export async function getActor(req: Request): Promise<Actor | null> {
   return verifySession(token);
 }
 
+/**
+ * True for state-changing requests a browser sent from another site: either an Origin
+ * header that doesn't match our host, or Sec-Fetch-Site: cross-site.
+ */
+export function isCrossSiteBrowserRequest(req: Request): boolean {
+  if (SAFE_METHODS.has(req.method)) return false;
+  if (req.headers.get("sec-fetch-site") === "cross-site") return true;
+  const origin = req.headers.get("origin");
+  return origin !== null && !isSameOrigin(req);
+}
+
 function isSameOrigin(req: Request): boolean {
   const origin = req.headers.get("origin");
   if (!origin) return req.headers.get("sec-fetch-site") === "same-origin";

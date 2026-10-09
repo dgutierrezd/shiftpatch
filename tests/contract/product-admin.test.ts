@@ -218,6 +218,9 @@ describe("POST /api/admin/reset", () => {
     const log = await (
       await auditLog(apiRequest("/api/audit-log", { token: t.admin }), undefined)
     ).json();
-    expect(log.entries.map((e: { action: string }) => e.action)).toEqual(["demo.reset"]);
+    const actions = log.entries.map((e: { action: string }) => e.action);
+    // History survives a reset (it must not be erasable), and the reset itself is newest.
+    expect(actions[0]).toBe("demo.reset");
+    expect(actions).toContain("shift.created");
   });
 });
