@@ -13,6 +13,9 @@ if (key) {
       // No session replay or autocapture: screens show nurse names and credential status.
       disable_session_recording: true,
       autocapture: false,
+      capture_dead_clicks: false,
+      capture_heatmaps: false,
+      disable_surveys: true,
       capture_pageview: "history_change",
       mask_all_text: true,
       mask_all_element_attributes: true,
