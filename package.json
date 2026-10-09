@@ -13,9 +13,9 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "verify": "npm run typecheck && npm run lint && npm run test",
-    "db:migrate": "tsx scripts/db-migrate.ts",
-    "db:seed": "tsx scripts/db-seed.ts",
-    "smoke": "tsx scripts/smoke.ts"
+    "db:migrate": "tsx scripts/db-migrate.mts",
+    "db:seed": "tsx scripts/db-seed.mts",
+    "smoke": "tsx scripts/smoke.mts"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.1",
