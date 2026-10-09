@@ -5,16 +5,17 @@
   --background: #f6f8fa;
   --surface: #ffffff;
   --foreground: #0f172a;
-  --muted: #64748b;
+  /* Darker than slate-500 so muted text stays AA on the tinted page background too. */
+  --muted: #556377;
   --border: #e2e8f0;
   --brand: #0f766e;
   --brand-strong: #115e59;
   --brand-soft: #ccfbf1;
   --danger: #b91c1c;
   --danger-soft: #fee2e2;
-  --warning: #b45309;
+  --warning: #a14a08;
   --warning-soft: #fef3c7;
-  --success: #15803d;
+  --success: #166534;
   --success-soft: #dcfce7;
 }
 
@@ -37,7 +38,144 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ------------------------------------------------------------------ motion tokens */
+@theme {
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --shadow-lift: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -6px rgb(15 23 42 / 0.12);
+
+  /* Entrances only — exits stay instant so list counts update immediately. */
+  --animate-rise: rise 420ms var(--ease-out-soft) both;
+  --animate-fade: fade 320ms ease-out both;
+  --animate-pop: pop 360ms var(--ease-spring) both;
+  --animate-banner-in: banner-in 240ms var(--ease-out-soft) both;
+  --animate-banner-out: banner-out 180ms ease-in both;
+  --animate-countdown: countdown linear both;
+  --animate-flash: flash 1600ms ease-out both;
+  --animate-tick: tick 360ms var(--ease-out-soft) both;
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-draw: draw 520ms 120ms var(--ease-out-soft) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+  /* Starts mostly opaque: the banner must read as visible from its first frame. */
+  @keyframes banner-in {
+    from {
+      opacity: 0.6;
+      transform: translateY(-10px) scale(0.98);
+    }
+  }
+  @keyframes banner-out {
+    to {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.98);
+    }
+  }
+  @keyframes countdown {
+    from {
+      transform: scaleX(1);
+    }
+    to {
+      transform: scaleX(0);
+    }
+  }
+  @keyframes flash {
+    from,
+    20% {
+      background-color: rgb(204 251 241 / 0.9);
+    }
+    to {
+      background-color: transparent;
+    }
+  }
+  @keyframes tick {
+    from {
+      opacity: 0.2;
+      transform: translateY(6px);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: -100% 0;
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 24;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+/* Stagger: set `style={{ "--i": index }}`; delay is capped so long lists never lag. */
+@utility stagger {
+  animation-delay: min(calc(var(--i, 0) * 45ms), 315ms);
+}
+
+@utility skeleton {
+  border-radius: 0.375rem;
+  background: linear-gradient(90deg, #eef2f6 0%, #f8fafc 50%, #eef2f6 100%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+::selection {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+
+/* Non-essential motion off for people who ask for it. Final states still apply. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
 }
