@@ -1,11 +1,9 @@
-/** ShiftPatch mark: a rounded "patch" with a cross-shaped shift slot. Decorative. */
-export function LogoMark({ className = "size-7" }: { className?: string }) {
+/** ShiftPatch mark: a flat rounded square with a cross. Decorative. */
+export function LogoMark({ className = "size-6" }: { className?: string }) {
   return (
     <svg aria-hidden="true" viewBox="0 0 32 32" className={className}>
-      <rect width="32" height="32" rx="9" fill="#0f766e" />
-      <path d="M0 9a9 9 0 0 1 9-9h14a9 9 0 0 1 9 9v3C22 4 10 4 0 12z" fill="#14b8a6" />
-      <path d="M13 8.5h6v4.5h4.5v6H19v4.5h-6V19H8.5v-6H13z" fill="#fff" fillOpacity="0.95" />
-      <circle cx="16" cy="16" r="1.7" fill="#0f766e" />
+      <rect width="32" height="32" rx="8" fill="#0f766e" />
+      <path d="M13 8h6v5h5v6h-5v5h-6v-5H8v-6h5z" fill="#fff" />
     </svg>
   );
 }
@@ -15,9 +13,7 @@ export function Logo({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
       <LogoMark />
-      <span className="text-lg font-bold tracking-tight text-foreground">
-        Shift<span className="text-brand">Patch</span>
-      </span>
+      <span className="text-lg font-bold tracking-tight text-brand">ShiftPatch</span>
     </span>
   );
 }

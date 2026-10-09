@@ -16,11 +16,10 @@ export function StatusBadge({ status, testId }: { status: string; testId?: strin
   return (
     <span
       data-testid={testId}
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors duration-300 ${
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
         STYLES[status] ?? "bg-slate-100 text-slate-700"
       }`}
     >
-      <span aria-hidden="true" className="size-1.5 rounded-full bg-current opacity-70" />
       {status}
     </span>
   );
