@@ -33,7 +33,8 @@ jobs:
     needs: quality
     services:
       postgres:
-        image: postgres:16
+        # Docker Hub rate-limits anonymous pulls on shared runners; use the official image via ECR Public.
+        image: public.ecr.aws/docker/library/postgres:16
         env:
           POSTGRES_USER: shiftpatch
           POSTGRES_PASSWORD: shiftpatch
