@@ -72,7 +72,7 @@ export function CredentialUploadForm({
 
   return (
     <form ref={formRef} onSubmit={onSubmit} noValidate className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4">
         <Field label="Credential type" htmlFor="credential-type">
           <Select
             id="credential-type"

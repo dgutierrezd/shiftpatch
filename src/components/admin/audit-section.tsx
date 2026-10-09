@@ -1,17 +1,30 @@
-import { tableClass, tdClass, thClass, theadClass, trClass } from "@/components/ui/primitives";
+"use client";
+
+import { useState } from "react";
+import {
+  Button,
+  tableClass,
+  tdClass,
+  thClass,
+  theadClass,
+  trClass,
+} from "@/components/ui/primitives";
 import { actionLabel, formatDateTime, metadataPairs } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
 import type { AuditEntry, Loadable } from "./types";
 
 const COLUMNS = ["Time", "Actor", "Action", "Entity", "Details"];
+const PAGE_SIZE = 25;
 
 export function AuditSection({ audit }: { audit: Loadable<AuditEntry[]> }) {
-  const rows = audit.data ?? [];
+  const all = audit.data ?? [];
+  const [visible, setVisible] = useState(PAGE_SIZE);
+  const rows = all.slice(0, visible);
   return (
     <AdminSection
       id="audit"
       title="Audit log"
-      description="Latest 100 events, newest first."
+      description={`Newest first · showing ${rows.length} of ${all.length} most recent events.`}
       error={audit.data ? audit.error : null}
     >
       <TableScroll>
@@ -74,6 +87,13 @@ export function AuditSection({ audit }: { audit: Loadable<AuditEntry[]> }) {
           </tbody>
         </table>
       </TableScroll>
+      {all.length > visible && (
+        <div className="mt-4 flex justify-center">
+          <Button variant="secondary" onClick={() => setVisible((v) => v + PAGE_SIZE)}>
+            Show {Math.min(PAGE_SIZE, all.length - visible)} more
+          </Button>
+        </div>
+      )}
     </AdminSection>
   );
 }
