@@ -1,4 +1,4 @@
-import { Card, EmptyState, SkeletonList } from "@/components/ui/primitives";
+import { EmptyState, LoadingLine, Section } from "@/components/ui/primitives";
 import { formatTimestamp } from "./format";
 import type { NotificationDto } from "./types";
 
@@ -16,32 +16,38 @@ export function NotificationsList({
   const items = (notifications ?? []).slice(0, MAX_ITEMS);
 
   return (
-    <Card title="Recent notifications">
+    <Section title="Recent notifications" dek="The latest five messages for your agency.">
       {error && items.length === 0 ? (
-        <p role="alert" className="text-sm text-danger">
+        <p role="alert" className="text-small text-danger">
           Couldn&apos;t load notifications: {error}
         </p>
       ) : items.length === 0 ? (
         loading ? (
-          <SkeletonList label="Loading notifications…" rows={2} />
+          <LoadingLine label="Loading notifications…" />
         ) : (
           <EmptyState>No notifications yet.</EmptyState>
         )
       ) : (
-        <ul className="divide-y divide-border">
+        <ul className="border-t border-ink">
           {items.map((n) => (
-            <li key={n.id} className="flex animate-fade flex-col gap-0.5 py-3 first:pt-0 last:pb-0">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className={`text-sm ${n.readAt ? "" : "font-semibold"}`}>{n.subject}</p>
-                <time dateTime={n.createdAt} className="text-xs text-muted">
-                  {formatTimestamp(n.createdAt)}
-                </time>
+            <li
+              key={n.id}
+              className="grid gap-x-8 gap-y-0.5 border-b border-rule py-3 last:border-0 sm:grid-cols-[1fr_auto]"
+            >
+              <div className="min-w-0">
+                <p className={n.readAt ? "text-ink" : "font-medium text-ink"}>{n.subject}</p>
+                <p className="text-small text-muted">{n.body}</p>
               </div>
-              <p className="text-sm text-muted">{n.body}</p>
+              <time
+                dateTime={n.createdAt}
+                className="font-mono text-[0.75rem] whitespace-nowrap text-muted sm:pt-0.5"
+              >
+                {formatTimestamp(n.createdAt)}
+              </time>
             </li>
           ))}
         </ul>
       )}
-    </Card>
+    </Section>
   );
 }

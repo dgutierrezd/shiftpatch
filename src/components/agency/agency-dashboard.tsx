@@ -55,45 +55,35 @@ function AgencyDashboardContent() {
 
   if (!user.agencyId) {
     return (
-      <p role="alert" className="text-sm text-danger">
+      <p role="alert" className="text-small text-danger">
         Your account isn&apos;t linked to an agency. Contact support.
       </p>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div className="space-y-4">
+    <div className="space-y-14">
+      <div className="space-y-8">
+        <header className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold tracking-wide text-brand uppercase">Agency</p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Shifts</h1>
-            <p className="text-sm text-muted">
+            <h1 className="text-title text-ink sm:text-display">Shifts</h1>
+            <p className="mt-2 text-lead text-muted">
               Post open shifts and manage who&apos;s covering them.
             </p>
           </div>
-          <KpiRow shifts={shifts.data?.shifts} />
-        </div>
-        <Button
-          onClick={() => setFormOpen((open) => !open)}
-          aria-expanded={formOpen}
-          aria-controls={POST_SHIFT_FORM_ID}
-          data-testid="agency-post-shift-button"
-          className="self-start lg:self-end"
-        >
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 16 16"
-            className={`size-4 transition-transform duration-200 ${formOpen ? "rotate-45" : ""}`}
-            fill="none"
+          <Button
+            onClick={() => setFormOpen((open) => !open)}
+            aria-expanded={formOpen}
+            aria-controls={POST_SHIFT_FORM_ID}
+            data-testid="agency-post-shift-button"
+            className="self-start sm:self-auto"
           >
-            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
-          </svg>
-          Post a shift
-        </Button>
+            Post a shift
+          </Button>
+        </header>
+        <KpiRow shifts={shifts.data?.shifts} />
+        {formOpen && <PostShiftForm onPosted={onPosted} />}
       </div>
-
-      {formOpen && <PostShiftForm onPosted={onPosted} />}
 
       <ShiftsTable
         shifts={shifts.data?.shifts}

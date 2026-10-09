@@ -5,10 +5,10 @@ import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
-  Card,
-  rowEnterClass,
+  freshRowClass,
+  idClass,
+  Section,
   Select,
-  staggerStyle,
   tableClass,
   tdClass,
   thClass,
@@ -34,12 +34,12 @@ const COLUMNS = ["Date", "Time", "Role", "Status", "Claimed by", "Action"] as co
 
 export function ShiftTime({ startTime, endTime }: { startTime: string; endTime: string }) {
   return (
-    <span className="inline-flex flex-wrap items-center gap-2">
-      <span className="tabular-nums">
+    <span className="inline-flex flex-wrap items-baseline gap-x-1.5 whitespace-nowrap">
+      <span className="font-mono text-small">
         {startTime}–{endTime}
       </span>
       {isOvernight(startTime, endTime) && (
-        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600">Overnight</span>
+        <span className="font-serif text-muted italic">overnight</span>
       )}
     </span>
   );
@@ -75,7 +75,7 @@ function CancelControls({ shift, onChanged }: { shift: ShiftDto; onChanged: () =
         name="reason"
         value={reason}
         onChange={(e) => setReason(e.target.value as Reason)}
-        className="w-auto"
+        className="h-8 w-auto text-small"
       >
         {CANCELLATION_REASONS.map((r) => (
           <option key={r} value={r}>
@@ -85,6 +85,8 @@ function CancelControls({ shift, onChanged }: { shift: ShiftDto; onChanged: () =
       </Select>
       <Button
         variant="danger"
+        size="sm"
+        className="h-8"
         onClick={cancel}
         disabled={pending}
         data-testid="shift-cancel-button"
@@ -116,8 +118,11 @@ export function ShiftsTable({
   const fresh = useFreshIds(shifts?.map((s) => s.id));
 
   return (
-    <Card title="Your shifts">
-      <div className="-mx-5 overflow-x-auto">
+    <Section
+      title="Your shifts"
+      dek="A cancellation or no-show reopens the shift for other nurses."
+    >
+      <div className="overflow-x-auto">
         <table className={tableClass}>
           <caption className="sr-only">Shifts posted by your agency</caption>
           <thead className={theadClass}>
@@ -138,24 +143,23 @@ export function ShiftsTable({
                 empty="No shifts posted yet. Use “Post a shift” to add one."
               />
             ) : (
-              sorted.map((shift, i) => (
+              sorted.map((shift) => (
                 <tr
                   key={shift.id}
-                  style={staggerStyle(i)}
-                  className={`${trClass} ${fresh.has(shift.id) ? "animate-flash" : rowEnterClass}`}
+                  className={`${trClass} ${fresh.has(shift.id) ? freshRowClass : ""}`}
                 >
                   <td className={`${tdClass} whitespace-nowrap`}>{formatShiftDate(shift.date)}</td>
                   <td className={tdClass}>
                     <ShiftTime startTime={shift.startTime} endTime={shift.endTime} />
                   </td>
-                  <td className={tdClass}>{shift.role}</td>
+                  <td className={`${tdClass} font-mono text-small`}>{shift.role}</td>
                   <td className={tdClass}>
                     <StatusBadge status={shift.status} />
                   </td>
                   <td className={tdClass}>
                     {shift.claimedBy ? (
                       (nurseNames.get(shift.claimedBy) ?? (
-                        <code className="font-mono text-xs">{shift.claimedBy}</code>
+                        <code className={idClass}>{shift.claimedBy}</code>
                       ))
                     ) : (
                       <span className="text-muted">—</span>
@@ -175,10 +179,10 @@ export function ShiftsTable({
         </table>
       </div>
       {error && sorted.length > 0 && (
-        <p role="alert" className="mt-4 text-sm text-danger">
+        <p role="alert" className="mt-4 text-small text-danger">
           Couldn&apos;t refresh shifts: {error}
         </p>
       )}
-    </Card>
+    </Section>
   );
 }

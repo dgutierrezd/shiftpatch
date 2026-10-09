@@ -12,7 +12,8 @@ type Size = "md" | "sm";
 const VARIANTS: Record<Variant, string> = {
   primary: "bg-accent text-white hover:bg-accent-hover",
   secondary: "border border-rule bg-paper text-ink hover:border-muted",
-  danger: "border border-danger/70 bg-transparent text-danger hover:border-danger hover:bg-danger/5",
+  danger:
+    "border border-danger/70 bg-transparent text-danger hover:border-danger hover:bg-danger/5",
   quiet: "text-accent underline-offset-4 hover:underline",
   /** @deprecated Use "quiet". */
   ghost: "text-accent underline-offset-4 hover:underline",
@@ -143,7 +144,11 @@ export function Note({
   role?: "note" | "alert" | "status";
   className?: string;
 }) {
-  const rule = { warning: "border-l-warning", danger: "border-l-danger", success: "border-l-success" };
+  const rule = {
+    warning: "border-l-warning",
+    danger: "border-l-danger",
+    success: "border-l-success",
+  };
   return (
     <div
       role={role}
@@ -195,7 +200,14 @@ export function SkeletonList({ label }: { label: string; rows?: number }) {
 }
 
 /** @deprecated Use `LoadingRow`. */
-export function SkeletonRows({ colSpan, label }: { colSpan: number; label: string; rows?: number }) {
+export function SkeletonRows({
+  colSpan,
+  label,
+}: {
+  colSpan: number;
+  label: string;
+  rows?: number;
+}) {
   return <LoadingRow colSpan={colSpan} label={label} />;
 }
 

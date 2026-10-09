@@ -5,9 +5,8 @@ import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
-  Card,
-  rowEnterClass,
-  staggerStyle,
+  numClass,
+  Section,
   tableClass,
   tdClass,
   thClass,
@@ -22,6 +21,7 @@ import { ShiftTime } from "./shifts-table";
 import type { TimesheetDto } from "./types";
 
 const COLUMNS = ["Nurse", "Shift", "Scheduled", "Worked", "Status", "Action"] as const;
+const NUMERIC: ReadonlySet<string> = new Set(["Scheduled", "Worked"]);
 
 function hours(value: number | null): string {
   return value === null ? "—" : `${value} h`;
@@ -54,6 +54,7 @@ function ApproveButton({
   return (
     <Button
       variant="secondary"
+      size="sm"
       onClick={approve}
       disabled={pending}
       aria-label={`Approve timesheet for ${timesheet.nurseName} on ${formatShiftDate(timesheet.date)}`}
@@ -77,14 +78,14 @@ export function TimesheetsTable({
   const rows = timesheets ?? [];
 
   return (
-    <Card title="Timesheets">
-      <div className="-mx-5 overflow-x-auto">
+    <Section title="Timesheets" dek="Hours submitted by nurses, waiting for your approval.">
+      <div className="overflow-x-auto">
         <table data-testid="timesheet-table" className={tableClass}>
           <caption className="sr-only">Timesheets for your agency&apos;s shifts</caption>
           <thead className={theadClass}>
             <tr>
               {COLUMNS.map((c) => (
-                <th key={c} scope="col" className={thClass}>
+                <th key={c} scope="col" className={`${thClass} ${NUMERIC.has(c) ? numClass : ""}`}>
                   {c}
                 </th>
               ))}
@@ -99,17 +100,17 @@ export function TimesheetsTable({
                 empty="No timesheets yet. They appear once a nurse claims one of your shifts."
               />
             ) : (
-              rows.map((t, i) => (
-                <tr key={t.id} style={staggerStyle(i)} className={`${trClass} ${rowEnterClass}`}>
+              rows.map((t) => (
+                <tr key={t.id} className={trClass}>
                   <td className={tdClass}>{t.nurseName}</td>
                   <td className={tdClass}>
                     <div className="whitespace-nowrap">{formatShiftDate(t.date)}</div>
-                    <div className="text-xs text-muted">
+                    <div className="text-muted">
                       <ShiftTime startTime={t.startTime} endTime={t.endTime} />
                     </div>
                   </td>
-                  <td className={`${tdClass} tabular-nums`}>{hours(t.scheduledHours)}</td>
-                  <td className={`${tdClass} tabular-nums`}>{hours(t.workedHours)}</td>
+                  <td className={`${tdClass} ${numClass}`}>{hours(t.scheduledHours)}</td>
+                  <td className={`${tdClass} ${numClass}`}>{hours(t.workedHours)}</td>
                   <td className={tdClass}>
                     <StatusBadge status={t.status} />
                   </td>
@@ -127,10 +128,10 @@ export function TimesheetsTable({
         </table>
       </div>
       {error && rows.length > 0 && (
-        <p role="alert" className="mt-4 text-sm text-danger">
+        <p role="alert" className="mt-4 text-small text-danger">
           Couldn&apos;t refresh timesheets: {error}
         </p>
       )}
-    </Card>
+    </Section>
   );
 }
