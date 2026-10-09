@@ -65,7 +65,7 @@ export function NurseDashboard() {
         </p>
       </div>
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+        <div className="min-w-0 space-y-6 lg:col-span-2">
           <OpenShiftsSection
             shifts={shifts}
             credentialsNeedAttention={credentialsNeedAttention}
@@ -74,7 +74,7 @@ export function NurseDashboard() {
           <MyShiftsSection userId={user.id} shifts={shifts} onChanged={refreshAll} />
           <TimesheetsSection timesheets={timesheets} onChanged={refreshAll} />
         </div>
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <CredentialsSection credentials={credentials} today={today} onChanged={refreshAll} />
           <NotificationsSection notifications={notifications} onChanged={refreshAll} />
         </div>
