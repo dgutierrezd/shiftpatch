@@ -2,10 +2,31 @@ import { StatusBadge } from "@/components/status-badge";
 import { numClass, tdClass, thClass } from "@/components/ui/primitives";
 
 const ROWS = [
-  { unit: "ICU, night", role: "RN", time: "19:00–07:00", hours: 12, nurse: "M. Lopez", status: "filled" },
+  {
+    unit: "ICU, night",
+    role: "RN",
+    time: "19:00–07:00",
+    hours: 12,
+    nurse: "M. Lopez",
+    status: "filled",
+  },
   { unit: "Med-Surg", role: "LPN", time: "07:00–15:00", hours: 8, nurse: null, status: "open" },
-  { unit: "Emergency, day", role: "CNA", time: "08:00–20:00", hours: 12, nurse: null, status: "open" },
-  { unit: "Telemetry", role: "RN", time: "15:00–23:00", hours: 8, nurse: null, status: "cancelled" },
+  {
+    unit: "Emergency, day",
+    role: "CNA",
+    time: "08:00–20:00",
+    hours: 12,
+    nurse: null,
+    status: "open",
+  },
+  {
+    unit: "Telemetry",
+    role: "RN",
+    time: "15:00–23:00",
+    hours: 8,
+    nurse: null,
+    status: "cancelled",
+  },
 ] as const;
 
 /**
@@ -46,9 +67,7 @@ export function TonightsBoard() {
                 <td className={`${tdClass} font-mono text-small`}>{r.role}</td>
                 <td className={`${tdClass} font-mono text-small whitespace-nowrap`}>{r.time}</td>
                 <td className={`${tdClass} ${numClass} hidden sm:table-cell`}>{r.hours}</td>
-                <td className={`${tdClass} hidden text-muted sm:table-cell`}>
-                  {r.nurse ?? "—"}
-                </td>
+                <td className={`${tdClass} hidden text-muted sm:table-cell`}>{r.nurse ?? "—"}</td>
                 <td className={tdClass}>
                   <StatusBadge status={r.status} />
                   {r.status === "cancelled" && <sup className="ml-0.5 text-muted">1</sup>}
@@ -61,9 +80,9 @@ export function TonightsBoard() {
       <figcaption className="mt-4 grid gap-1 border-t border-rule pt-3 text-small text-muted sm:grid-cols-[auto_1fr] sm:gap-x-6">
         <span className="font-medium text-ink">Fig. 1 — Tonight&apos;s board</span>
         <span>
-          Four shifts at a fictional 300-bed hospital, as an agency sees them.{" "}
-          <sup>1</sup> Cancelled in advance and reopened; one claim on it was declined because
-          the nurse&apos;s TB screening had expired.
+          Four shifts at a fictional 300-bed hospital, as an agency sees them. <sup>1</sup>{" "}
+          Cancelled in advance and reopened; one claim on it was declined because the nurse&apos;s
+          TB screening had expired.
         </span>
       </figcaption>
     </figure>

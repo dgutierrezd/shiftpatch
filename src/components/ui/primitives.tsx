@@ -1,12 +1,11 @@
 import type {
   ButtonHTMLAttributes,
-  CSSProperties,
   InputHTMLAttributes,
   ReactNode,
   SelectHTMLAttributes,
 } from "react";
 
-type Variant = "primary" | "secondary" | "danger" | "quiet" | "ghost";
+type Variant = "primary" | "secondary" | "danger" | "quiet";
 type Size = "md" | "sm";
 
 const VARIANTS: Record<Variant, string> = {
@@ -15,8 +14,6 @@ const VARIANTS: Record<Variant, string> = {
   danger:
     "border border-danger/70 bg-transparent text-danger hover:border-danger hover:bg-danger/5",
   quiet: "text-accent underline-offset-4 hover:underline",
-  /** @deprecated Use "quiet". */
-  ghost: "text-accent underline-offset-4 hover:underline",
 };
 
 const SIZES: Record<Size, string> = {
@@ -76,26 +73,6 @@ export function Section({
       </header>
       {children}
     </section>
-  );
-}
-
-/** @deprecated Legacy box; use `Section`. Kept until every caller migrates. */
-export function Card({
-  title,
-  actions,
-  children,
-  className = "",
-}: {
-  title?: ReactNode;
-  actions?: ReactNode;
-  children: ReactNode;
-  className?: string;
-  style?: CSSProperties;
-}) {
-  return (
-    <Section title={title ?? ""} actions={actions} className={className}>
-      {children}
-    </Section>
   );
 }
 
@@ -194,34 +171,6 @@ export function LoadingRow({ colSpan, label }: { colSpan: number; label: string 
   );
 }
 
-/** @deprecated Use `LoadingLine`. */
-export function SkeletonList({ label }: { label: string; rows?: number }) {
-  return <LoadingLine label={label} />;
-}
-
-/** @deprecated Use `LoadingRow`. */
-export function SkeletonRows({
-  colSpan,
-  label,
-}: {
-  colSpan: number;
-  label: string;
-  rows?: number;
-}) {
-  return <LoadingRow colSpan={colSpan} label={label} />;
-}
-
-/** @deprecated Decorative placeholder; renders a flat tint block. */
-export function Skeleton({ className = "" }: { className?: string }) {
-  return <span aria-hidden="true" className={`skeleton block h-3 ${className}`} />;
-}
-
-/** @deprecated No-op: entrances are no longer staggered. */
-export function staggerStyle(index: number): CSSProperties {
-  void index;
-  return {};
-}
-
 /* Report tables: an ink rule above the header, hairline rows, no zebra striping. */
 export const tableClass = "w-full min-w-[640px] border-t border-ink text-left text-[0.875rem]";
 export const theadClass = "border-b border-rule text-small text-muted";
@@ -234,5 +183,3 @@ export const numClass = "text-right tabular-nums";
 export const idClass = "font-mono text-small text-ink";
 /** Optional settle highlight for a row that just appeared; exits stay instant. */
 export const freshRowClass = "animate-settle";
-/** @deprecated Rows no longer animate in. */
-export const rowEnterClass = "";

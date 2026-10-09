@@ -49,8 +49,8 @@ export default function HomePage() {
               Fill last-minute nursing shifts <em className="italic">without the phone tree.</em>
             </h1>
             <p className="mt-6 max-w-[36rem] text-lead text-muted">
-              ShiftPatch posts your open shifts to qualified nurses, stops anyone whose
-              credentials have lapsed, and keeps one current record of who is covering what.
+              ShiftPatch posts your open shifts to qualified nurses, stops anyone whose credentials
+              have lapsed, and keeps one current record of who is covering what.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
               <a
@@ -99,14 +99,14 @@ export default function HomePage() {
               </div>
               <div className="max-w-[40rem] space-y-4 text-lead text-ink">
                 <p>
-                  Credential checks happen at the moment of each claim, not at onboarding and
-                  never again. Every post, claim, cancellation and approval is written to an audit
-                  trail that names who did it and when.
+                  Credential checks happen at the moment of each claim, not at onboarding and never
+                  again. Every post, claim, cancellation and approval is written to an audit trail
+                  that names who did it and when.
                 </p>
                 <p className="text-muted">
                   When a surveyor asks, an admin generates an inspection report of license and
-                  TB-screening status for each nurse. The report is itself audited, and it is not
-                  an export of medical records: no documents or health data leave the system.
+                  TB-screening status for each nurse. The report is itself audited, and it is not an
+                  export of medical records: no documents or health data leave the system.
                 </p>
               </div>
             </div>
@@ -118,8 +118,7 @@ export default function HomePage() {
               <div>
                 <h2 className="text-title text-ink">Request a walkthrough</h2>
                 <p className="mt-2 text-muted">
-                  We&apos;re speaking with operations managers and staffing directors before
-                  launch.
+                  We&apos;re speaking with operations managers and staffing directors before launch.
                 </p>
               </div>
               <div className="max-w-[32rem] rounded-md border border-rule bg-surface p-6 sm:p-8">

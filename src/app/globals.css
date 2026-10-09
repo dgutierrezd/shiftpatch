@@ -33,17 +33,6 @@
   --color-danger: var(--danger);
   --color-warning: var(--warning);
 
-  /* Legacy aliases, removed once every component uses the names above. */
-  --color-background: var(--paper);
-  --color-foreground: var(--ink);
-  --color-border: var(--rule);
-  --color-brand: var(--accent);
-  --color-brand-strong: var(--accent-hover);
-  --color-brand-soft: var(--tint);
-  --color-danger-soft: var(--tint);
-  --color-warning-soft: var(--tint);
-  --color-success-soft: var(--tint);
-
   --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
@@ -95,15 +84,6 @@
       background-color: transparent;
     }
   }
-}
-
-/* Legacy motion utilities kept inert until the components stop using them. */
-@utility stagger {
-  animation-delay: 0ms;
-}
-@utility skeleton {
-  display: block;
-  background: var(--tint);
 }
 
 html {
