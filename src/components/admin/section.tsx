@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Card, EmptyRow } from "@/components/ui/primitives";
+import { Card, EmptyRow, SkeletonRows } from "@/components/ui/primitives";
 import type { Loadable } from "./types";
 
 /** In-page anchor target wrapping a Card; `scroll-mt` keeps the heading visible after a jump. */
@@ -22,7 +22,7 @@ export function AdminSection({
   children: ReactNode;
 }) {
   return (
-    <div id={id} className={`scroll-mt-6 ${className}`}>
+    <div id={id} className={`scroll-mt-16 ${className}`}>
       <Card title={title} actions={actions}>
         {description && <p className="mb-4 text-sm text-muted">{description}</p>}
         {error && (
@@ -36,11 +36,14 @@ export function AdminSection({
   );
 }
 
-/** Tables scroll horizontally on narrow screens instead of breaking the layout. */
-export function TableScroll({ children }: { children: ReactNode }) {
+/**
+ * Tables scroll horizontally on narrow screens instead of breaking the layout. With
+ * `tall`, long tables also scroll vertically inside the card (pair with a sticky thead).
+ */
+export function TableScroll({ children, tall = false }: { children: ReactNode; tall?: boolean }) {
   return (
     <div
-      className="-mx-5 overflow-x-auto px-5"
+      className={`-mx-5 overflow-x-auto px-5 ${tall ? "max-h-[36rem] overflow-y-auto overscroll-contain" : ""}`}
       tabIndex={0}
       role="group"
       aria-label="Scrollable table"
@@ -67,7 +70,7 @@ export function TableStatus<T>({
 }) {
   if (rows > 0) return null;
   if (resource.data === null && resource.error === null)
-    return <EmptyRow colSpan={colSpan}>Loading…</EmptyRow>;
+    return <SkeletonRows colSpan={colSpan} label="Loading…" />;
   if (resource.data === null)
     return <EmptyRow colSpan={colSpan}>Couldn’t load: {resource.error}</EmptyRow>;
   return <EmptyRow colSpan={colSpan}>{empty}</EmptyRow>;

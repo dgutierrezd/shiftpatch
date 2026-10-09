@@ -5,12 +5,15 @@ import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
+  rowEnterClass,
+  staggerStyle,
   tableClass,
   tdClass,
   thClass,
   theadClass,
   trClass,
 } from "@/components/ui/primitives";
+import { useFreshIds } from "@/components/ui/use-fresh-ids";
 import { api, errorMessage } from "@/lib/api-client";
 import { track } from "@/lib/analytics";
 import { isOvernight } from "./format";
@@ -39,6 +42,7 @@ export function ShiftsSection({
 
   const all = shifts.data ?? [];
   const rows = filter === "all" ? all : all.filter((s) => s.status === filter);
+  const fresh = useFreshIds(shifts.data?.map((s) => s.id));
   const count = (f: Filter) =>
     f === "all" ? all.length : all.filter((s) => s.status === f).length;
 
@@ -96,8 +100,12 @@ export function ShiftsSection({
             </tr>
           </thead>
           <tbody>
-            {rows.map((s) => (
-              <tr key={s.id} className={trClass}>
+            {rows.map((s, i) => (
+              <tr
+                key={s.id}
+                style={staggerStyle(i)}
+                className={`${trClass} ${fresh.has(s.id) ? "animate-flash" : rowEnterClass}`}
+              >
                 <td className={`${tdClass} font-mono text-xs`}>{s.id}</td>
                 <td className={tdClass}>{s.agencyName}</td>
                 <td className={tdClass}>{s.role}</td>

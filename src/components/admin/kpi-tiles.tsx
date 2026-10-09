@@ -1,3 +1,4 @@
+import { rowEnterClass, Skeleton, staggerStyle } from "@/components/ui/primitives";
 import { formatPercent } from "./format";
 import type { AdminReport, AgencyBreakdown, Loadable } from "./types";
 
@@ -35,6 +36,12 @@ function tiles(report: AdminReport): Tile[] {
   ];
 }
 
+const ACCENT: Record<NonNullable<Tile["tone"]>, string> = {
+  default: "bg-brand/40",
+  warning: "bg-warning/60",
+  danger: "bg-danger/60",
+};
+
 const TONE: Record<NonNullable<Tile["tone"]>, string> = {
   default: "text-foreground",
   warning: "text-warning",
@@ -43,12 +50,28 @@ const TONE: Record<NonNullable<Tile["tone"]>, string> = {
 
 export function KpiTiles({ report }: { report: Loadable<AdminReport> }) {
   if (!report.data) {
+    if (report.error) {
+      return (
+        <div
+          className="rounded-xl border border-danger/30 bg-danger-soft p-5 text-sm text-danger shadow-sm"
+          role="alert"
+        >
+          Couldn’t load the report: {report.error}
+        </div>
+      );
+    }
     return (
-      <div
-        className="rounded-xl border border-border bg-surface p-5 text-sm text-muted shadow-sm"
-        role={report.error ? "alert" : "status"}
-      >
-        {report.error ? `Couldn’t load the report: ${report.error}` : "Loading report…"}
+      <div role="status" className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <span className="sr-only">Loading report…</span>
+        {Array.from({ length: 6 }, (_, i) => (
+          <div
+            key={i}
+            className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-sm"
+          >
+            <Skeleton className="h-2.5 w-16" />
+            <Skeleton className="h-6 w-10" />
+          </div>
+        ))}
       </div>
     );
   }
@@ -60,10 +83,22 @@ export function KpiTiles({ report }: { report: Loadable<AdminReport> }) {
         </p>
       )}
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {tiles(report.data).map((t) => (
-          <div key={t.label} className="rounded-xl border border-border bg-surface p-4 shadow-sm">
+        {tiles(report.data).map((t, i) => (
+          <div
+            key={t.label}
+            style={staggerStyle(i)}
+            className={`relative overflow-hidden rounded-xl border border-border bg-surface p-4 shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lift ${rowEnterClass}`}
+          >
+            <span
+              aria-hidden="true"
+              className={`absolute inset-x-0 top-0 h-0.5 ${ACCENT[t.tone ?? "default"]}`}
+            />
             <dt className="text-xs font-medium text-muted">{t.label}</dt>
-            <dd className={`mt-1 text-2xl font-semibold tabular-nums ${TONE[t.tone ?? "default"]}`}>
+            {/* Re-keyed on change so a new value ticks in after each poll. */}
+            <dd
+              key={t.value}
+              className={`mt-1 animate-tick text-2xl font-semibold tabular-nums ${TONE[t.tone ?? "default"]}`}
+            >
               {t.value}
             </dd>
             {t.hint && <dd className="text-xs text-muted">{t.hint}</dd>}
@@ -105,7 +140,10 @@ function AgencyBreakdownList({ rows }: { rows: AgencyBreakdown[] }) {
                 role="img"
                 aria-label={`${a.agencyName}: ${a.filled} filled, ${a.open} open`}
               >
-                <div className="bg-success" style={{ width: `${filledPct}%` }} />
+                <div
+                  className="bg-success transition-[width] duration-700 ease-out-soft"
+                  style={{ width: `${filledPct}%` }}
+                />
               </div>
               <span className="text-xs text-muted tabular-nums">
                 {a.filled} filled · {a.open} open

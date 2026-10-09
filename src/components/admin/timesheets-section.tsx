@@ -5,6 +5,8 @@ import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
+  rowEnterClass,
+  staggerStyle,
   tableClass,
   tdClass,
   thClass,
@@ -67,8 +69,8 @@ export function TimesheetsSection({
             </tr>
           </thead>
           <tbody>
-            {rows.map((t) => (
-              <tr key={t.id} className={trClass}>
+            {rows.map((t, i) => (
+              <tr key={t.id} style={staggerStyle(i)} className={`${trClass} ${rowEnterClass}`}>
                 <td className={tdClass}>{t.nurseName}</td>
                 <td className={tdClass}>{t.agencyName}</td>
                 <td className={`${tdClass} font-mono text-xs`}>{t.shiftId}</td>
