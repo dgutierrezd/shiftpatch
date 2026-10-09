@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Spec-provided demo password and CI-only throwaway database credentials"
+regexes = ['''Trial2026!''', '''ci-only-jwt-secret-not-used-anywhere-else-000''', '''test-secret-that-is-long-enough-for-hs256-signing''']
