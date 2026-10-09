@@ -20,7 +20,7 @@ const eslintConfig = defineConfig([
     files: ["scripts/**", "tests/**", "e2e/**"],
     rules: { "no-console": "off", "security/detect-non-literal-fs-filename": "off" },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "playwright-report/**", "test-results/**"]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "playwright-report/**", "test-results/**", ".claude/worktrees/**"]),
 ]);
 
 export default eslintConfig;
