@@ -86,26 +86,29 @@
   }
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* Element defaults live in the base layer so utilities can override them. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-size: var(--text-body);
-  line-height: var(--text-body--line-height);
-  font-feature-settings: "kern";
-  text-rendering: optimizeLegibility;
-}
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-feature-settings: "kern";
+    text-rendering: optimizeLegibility;
+  }
 
-h1,
-h2,
-h3 {
-  font-family: var(--font-serif);
-  font-weight: 450;
-  letter-spacing: -0.01em;
-  font-optical-sizing: auto;
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 450;
+    letter-spacing: -0.01em;
+    font-optical-sizing: auto;
+  }
 }
 
 /* Figures set in the serif stay lining and tabular so columns of numbers align. */

@@ -66,7 +66,7 @@ export function OpenShiftsSection({
             <li
               key={shift.id}
               data-testid="shift-list-item"
-              className="flex flex-col gap-3 border-b border-rule py-4 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-3 border-b border-rule py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between"
             >
               <ShiftSummary shift={shift} />
               <Button

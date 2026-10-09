@@ -93,7 +93,7 @@ export function TimesheetsSection({
   return (
     <Section title="Timesheets" dek="Submit the hours you worked; the agency approves them.">
       {timesheets.error && <SectionStatus resource={timesheets} label="timesheets" />}
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
         <table data-testid="timesheet-table" className={tableClass}>
           <thead className={theadClass}>
             <tr>

@@ -48,11 +48,7 @@ export function KpiTiles({ report }: { report: Loadable<AdminReport> }) {
           Couldn’t refresh the report: {report.error}
         </Note>
       )}
-      <Figures
-        label="Key figures"
-        columns="grid-cols-2 sm:grid-cols-3 lg:grid-cols-6"
-        items={figures(report.data)}
-      />
+      <Figures label="Key figures" layout="six" items={figures(report.data)} />
       <AgencyBreakdownTable rows={report.data.byAgency} />
     </div>
   );
@@ -64,7 +60,7 @@ function AgencyBreakdownTable({ rows }: { rows: AgencyBreakdown[] }) {
   return (
     <div>
       <h3 className="mb-3 text-lead text-ink">Coverage by agency</h3>
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
         <table className="w-full min-w-[30rem] border-t border-ink text-left text-[0.875rem]">
           <thead className="border-b border-rule text-small text-muted">
             <tr>

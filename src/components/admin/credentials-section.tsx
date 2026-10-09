@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
 import { track } from "@/lib/analytics";
-import { credentialLabel, expiryHint, formatDateTime } from "./format";
+import { credentialLabel, daysUntil, expiryHint, formatDateTime } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
 import type { CredentialDto, ExpiringCredential, Loadable } from "./types";
 
@@ -154,7 +154,9 @@ export function CredentialsSection({
                   <span className="text-ink">{e.nurseName}</span>
                   <span className="text-muted"> · {credentialLabel(e.type)}</span>
                 </span>
-                <span className="text-warning">
+                <span
+                  className={(daysUntil(e.expiresAt) ?? 0) < 0 ? "text-danger" : "text-warning"}
+                >
                   <span className="font-mono text-small">{e.expiresAt}</span>{" "}
                   <span className="text-small">({expiryHint(e.expiresAt)})</span>
                 </span>

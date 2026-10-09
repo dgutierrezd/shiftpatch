@@ -79,7 +79,7 @@ export function TimesheetsTable({
 
   return (
     <Section title="Timesheets" dek="Hours submitted by nurses, waiting for your approval.">
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
         <table data-testid="timesheet-table" className={tableClass}>
           <caption className="sr-only">Timesheets for your agency&apos;s shifts</caption>
           <thead className={theadClass}>

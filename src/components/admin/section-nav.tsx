@@ -34,7 +34,7 @@ export function SectionNav({ anchors }: { anchors: Anchor[] }) {
   return (
     <nav
       aria-label="Dashboard sections"
-      className="sticky top-0 z-30 -mx-5 border-b border-rule bg-paper px-5 sm:-mx-8 sm:px-8 print:hidden"
+      className="sticky top-0 z-30 border-b border-rule bg-paper print:hidden"
     >
       <ul className="flex gap-6 overflow-x-auto py-3 text-small [scrollbar-width:none]">
         {anchors.map((a) => {

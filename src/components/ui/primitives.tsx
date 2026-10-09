@@ -99,14 +99,26 @@ export function Field({
 }
 
 const control =
-  "h-10 w-full rounded-[4px] border border-rule bg-surface px-3 text-body text-ink transition-colors duration-150 placeholder:text-muted/70 hover:border-muted/60 focus:border-accent focus:outline-1 focus:outline-accent aria-invalid:border-danger";
+  "rounded-[4px] border border-rule bg-surface px-3 text-ink transition-colors duration-150 placeholder:text-muted/70 hover:border-muted/60 focus:border-accent focus:outline-1 focus:outline-accent aria-invalid:border-danger";
+
+/** Default size classes, each dropped when the caller passes its own of that kind. */
+const CONTROL_DEFAULTS: [RegExp, string][] = [
+  [/(^|\s)h-/, "h-10"],
+  [/(^|\s)w-/, "w-full"],
+  [/(^|\s)text-(small|body|lead|\[)/, "text-body"],
+];
+
+function controlClass(extra = ""): string {
+  const defaults = CONTROL_DEFAULTS.filter(([re]) => !re.test(extra)).map(([, cls]) => cls);
+  return [control, ...defaults, extra].join(" ");
+}
 
 export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className={`${control} ${props.className ?? ""}`} />;
+  return <input {...props} className={controlClass(props.className)} />;
 }
 
 export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select {...props} className={`${control} pr-8 ${props.className ?? ""}`} />;
+  return <select {...props} className={controlClass(`pr-8 ${props.className ?? ""}`)} />;
 }
 
 /** A note set off by a 3px left rule in the tone's color; ink text, no icon. */

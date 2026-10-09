@@ -45,7 +45,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1100px] px-5 sm:px-8">
           {/* Hero */}
           <section className="pt-14 pb-16 sm:pt-24 sm:pb-20">
-            <h1 className="max-w-[15ch] text-[2.5rem] leading-[1.04] font-normal tracking-[-0.02em] text-ink sm:text-[4rem]">
+            <h1 className="max-w-[18ch] text-[2.5rem] leading-[1.04] font-normal tracking-[-0.02em] text-balance text-ink sm:text-[4rem]">
               Fill last-minute nursing shifts <em className="italic">without the phone tree.</em>
             </h1>
             <p className="mt-6 max-w-[36rem] text-lead text-muted">
@@ -80,7 +80,7 @@ export default function HomePage() {
                     <span className="figure block text-title leading-none text-accent">
                       {i + 1}
                     </span>
-                    <h3 className="mt-4 font-sans text-lead font-semibold tracking-normal text-ink">
+                    <h3 className="mt-4 text-[1.1875rem] leading-snug font-medium text-balance text-ink">
                       {step.title}
                     </h3>
                     <p className="mt-1.5 text-muted">{step.body}</p>

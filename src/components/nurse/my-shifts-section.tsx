@@ -52,7 +52,7 @@ export function MyShiftsSection({
           {mine.map((shift) => (
             <li
               key={shift.id}
-              className={`flex flex-col gap-3 border-b border-rule py-4 sm:flex-row sm:items-center sm:justify-between ${
+              className={`flex flex-col gap-3 border-b border-rule py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between ${
                 fresh.has(shift.id) ? freshRowClass : ""
               }`}
             >

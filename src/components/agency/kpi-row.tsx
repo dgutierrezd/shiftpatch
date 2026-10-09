@@ -18,7 +18,7 @@ export function KpiRow({ shifts }: { shifts: ShiftDto[] | undefined }) {
   return (
     <Figures
       label="Shift summary"
-      columns="grid-cols-3"
+      layout="three"
       items={[
         { label: "Open", value: show(kpis?.open) },
         { label: "Filled", value: show(kpis?.filled) },

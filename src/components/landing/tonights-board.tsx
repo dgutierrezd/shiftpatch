@@ -25,7 +25,8 @@ const ROWS = [
     time: "15:00–23:00",
     hours: 8,
     nurse: null,
-    status: "cancelled",
+    status: "open",
+    note: true,
   },
 ] as const;
 
@@ -36,7 +37,7 @@ const ROWS = [
 export function TonightsBoard() {
   return (
     <figure>
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
         <table className="w-full min-w-[20rem] border-t border-ink text-left text-[0.875rem]">
           <thead className="border-b border-rule text-small text-muted">
             <tr>
@@ -70,7 +71,7 @@ export function TonightsBoard() {
                 <td className={`${tdClass} hidden text-muted sm:table-cell`}>{r.nurse ?? "—"}</td>
                 <td className={tdClass}>
                   <StatusBadge status={r.status} />
-                  {r.status === "cancelled" && <sup className="ml-0.5 text-muted">1</sup>}
+                  {"note" in r && <sup className="ml-0.5 text-muted">1</sup>}
                 </td>
               </tr>
             ))}
@@ -80,9 +81,9 @@ export function TonightsBoard() {
       <figcaption className="mt-4 grid gap-1 border-t border-rule pt-3 text-small text-muted sm:grid-cols-[auto_1fr] sm:gap-x-6">
         <span className="font-medium text-ink">Fig. 1 — Tonight&apos;s board</span>
         <span>
-          Four shifts at a fictional 300-bed hospital, as an agency sees them. <sup>1</sup>{" "}
-          Cancelled in advance and reopened; one claim on it was declined because the nurse&apos;s
-          TB screening had expired.
+          Four shifts at a fictional 300-bed hospital, as an agency sees them. <sup>1</sup> Reopened
+          after the assigned nurse cancelled in advance. A claim on it was then declined: the
+          nurse&apos;s TB screening had expired.
         </span>
       </figcaption>
     </figure>

@@ -37,7 +37,7 @@ export function DemoAccounts() {
         {DEMO_ACCOUNTS.map((a) => (
           <li
             key={a.email}
-            className="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-3 border-b border-rule py-2 last:border-0 sm:grid-cols-[8.5rem_1fr]"
+            className="grid grid-cols-[5rem_1fr] items-baseline gap-x-3 border-b border-rule py-2 last:border-0 sm:grid-cols-[11rem_1fr]"
           >
             <span className="text-muted">
               {a.role} <span className="hidden sm:inline">· {a.note}</span>

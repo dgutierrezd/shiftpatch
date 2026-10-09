@@ -40,7 +40,7 @@ export function AdminSection({
 export function TableScroll({ children, tall = false }: { children: ReactNode; tall?: boolean }) {
   return (
     <div
-      className={`overflow-x-auto rounded-[2px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${tall ? "max-h-[36rem] overflow-y-auto overscroll-contain" : ""}`}
+      className={`relative overflow-x-auto rounded-[2px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${tall ? "max-h-[36rem] overflow-y-auto overscroll-contain" : ""}`}
       tabIndex={0}
       role="group"
       aria-label="Scrollable table"

@@ -36,10 +36,7 @@ export function NotificationsSection({
   }
 
   return (
-    <Section
-      title="Notifications"
-      dek={unread > 0 ? `${unread} unread` : notifications.data ? "Nothing unread." : undefined}
-    >
+    <Section title="Notifications" dek={unread > 0 ? `${unread} unread.` : undefined}>
       <SectionStatus resource={notifications} label="notifications" />
       {notifications.data !== null && list.length === 0 ? (
         <EmptyState>You&apos;re all caught up.</EmptyState>

@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Sign in" };
 export default function LoginPage() {
   return (
     <main className="flex flex-1 animate-fade-in flex-col px-5 py-10 sm:py-16">
-      <div className="mx-auto w-full max-w-[24rem]">
+      <div className="mx-auto w-full max-w-[26rem]">
         <Link href="/" className={`inline-block rounded-[2px] ${focusRing}`}>
           <Logo />
         </Link>

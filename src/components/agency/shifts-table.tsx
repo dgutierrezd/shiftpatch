@@ -66,7 +66,7 @@ function CancelControls({ shift, onChanged }: { shift: ShiftDto; onChanged: () =
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex items-center gap-2">
       <label htmlFor={selectId} className="sr-only">
         Cancellation reason for {shift.role} shift on {formatShiftDate(shift.date)}
       </label>
@@ -122,7 +122,7 @@ export function ShiftsTable({
       title="Your shifts"
       dek="A cancellation or no-show reopens the shift for other nurses."
     >
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
         <table className={tableClass}>
           <caption className="sr-only">Shifts posted by your agency</caption>
           <thead className={theadClass}>

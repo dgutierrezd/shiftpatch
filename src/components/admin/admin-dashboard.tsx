@@ -57,10 +57,12 @@ export function AdminDashboard() {
         <KpiTiles report={data.report} />
       </div>
 
-      <SectionNav anchors={ANCHORS} />
-
-      <div className="print:hidden">
-        <ShiftsSection shifts={data.shifts} onChanged={refresh} />
+      {/* The contents line's rule doubles as the top rule of the first section. */}
+      <div className="space-y-0">
+        <SectionNav anchors={ANCHORS} />
+        <div className="print:hidden [&>section]:border-t-0">
+          <ShiftsSection shifts={data.shifts} onChanged={refresh} />
+        </div>
       </div>
       <div className="print:hidden">
         <CredentialsSection
