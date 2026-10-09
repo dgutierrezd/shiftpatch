@@ -8,7 +8,7 @@ export interface Anchor {
 }
 
 /**
- * Sticky in-page navigation. Highlights the section currently in the reading band of the
+ * Sticky in-page contents line. Marks the section currently in the reading band of the
  * viewport (IntersectionObserver; no scroll listeners). Plain anchor links, so it works
  * with the keyboard and without JavaScript.
  */
@@ -34,9 +34,9 @@ export function SectionNav({ anchors }: { anchors: Anchor[] }) {
   return (
     <nav
       aria-label="Dashboard sections"
-      className="sticky top-0 z-30 -mx-4 border-b border-border/70 bg-background/85 px-4 py-2.5 backdrop-blur supports-[backdrop-filter]:bg-background/70 print:hidden"
+      className="sticky top-0 z-30 -mx-5 border-b border-rule bg-paper px-5 sm:-mx-8 sm:px-8 print:hidden"
     >
-      <ul className="flex gap-2 overflow-x-auto text-sm [scrollbar-width:none]">
+      <ul className="flex gap-6 overflow-x-auto py-3 text-small [scrollbar-width:none]">
         {anchors.map((a) => {
           const current = active === a.id;
           return (
@@ -44,10 +44,8 @@ export function SectionNav({ anchors }: { anchors: Anchor[] }) {
               <a
                 href={`#${a.id}`}
                 aria-current={current ? "location" : undefined}
-                className={`inline-block rounded-full border px-3 py-1 whitespace-nowrap transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
-                  current
-                    ? "border-brand bg-brand-soft font-medium text-brand-strong"
-                    : "border-border bg-surface text-muted hover:border-brand hover:text-brand-strong"
+                className={`rounded-[2px] whitespace-nowrap underline-offset-[6px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                  current ? "text-ink underline decoration-ink/60" : "text-muted hover:text-ink"
                 }`}
               >
                 {a.label}

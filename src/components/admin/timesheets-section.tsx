@@ -5,8 +5,8 @@ import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
-  rowEnterClass,
-  staggerStyle,
+  idClass,
+  numClass,
   tableClass,
   tdClass,
   thClass,
@@ -19,7 +19,8 @@ import { isOvernight } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
 import type { Loadable, TimesheetDto } from "./types";
 
-const COLUMNS = ["Nurse", "Agency", "Shift", "Scheduled", "Worked", "Status", "Action"];
+const COLUMNS = ["Nurse", "Agency", "Shift", "When", "Scheduled", "Worked", "Status", "Action"];
+const NUMERIC: ReadonlySet<string> = new Set(["Scheduled", "Worked"]);
 
 function hours(h: number | null): string {
   return h === null ? "—" : `${h} h`;
@@ -54,6 +55,7 @@ export function TimesheetsSection({
     <AdminSection
       id="timesheets"
       title="Timesheets"
+      description="One per filled shift. Approve once the nurse has submitted hours."
       error={timesheets.data ? timesheets.error : null}
     >
       <TableScroll>
@@ -62,33 +64,37 @@ export function TimesheetsSection({
           <thead className={theadClass}>
             <tr>
               {COLUMNS.map((c) => (
-                <th key={c} scope="col" className={thClass}>
+                <th key={c} scope="col" className={`${thClass} ${NUMERIC.has(c) ? numClass : ""}`}>
                   {c}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {rows.map((t, i) => (
-              <tr key={t.id} style={staggerStyle(i)} className={`${trClass} ${rowEnterClass}`}>
+            {rows.map((t) => (
+              <tr key={t.id} className={trClass}>
                 <td className={tdClass}>{t.nurseName}</td>
                 <td className={tdClass}>{t.agencyName}</td>
-                <td className={`${tdClass} font-mono text-xs`}>{t.shiftId}</td>
-                <td className={`${tdClass} whitespace-nowrap tabular-nums`}>
-                  {t.date} · {t.startTime}–{t.endTime}
-                  {isOvernight(t.startTime, t.endTime) && (
-                    <span className="ml-1 text-xs text-muted">(overnight)</span>
-                  )}
-                  <span className="block text-xs text-muted">{hours(t.scheduledHours)}</span>
+                <td className={tdClass}>
+                  <span className={idClass}>{t.shiftId}</span>
                 </td>
-                <td className={`${tdClass} tabular-nums`}>{hours(t.workedHours)}</td>
+                <td className={`${tdClass} whitespace-nowrap`}>
+                  <span className="font-mono text-small">
+                    {t.date} · {t.startTime}–{t.endTime}
+                  </span>
+                  {isOvernight(t.startTime, t.endTime) && (
+                    <span className="ml-1.5 font-serif text-muted italic">overnight</span>
+                  )}
+                </td>
+                <td className={`${tdClass} ${numClass}`}>{hours(t.scheduledHours)}</td>
+                <td className={`${tdClass} ${numClass}`}>{hours(t.workedHours)}</td>
                 <td className={tdClass}>
                   <StatusBadge status={t.status} />
                 </td>
                 <td className={tdClass}>
                   {t.status === "submitted" ? (
                     <Button
-                      className="px-2.5 py-1 text-xs"
+                      size="sm"
                       disabled={busyId === t.id}
                       aria-label={`Approve timesheet for ${t.nurseName}, shift ${t.shiftId}`}
                       onClick={() => void approve(t)}
@@ -96,7 +102,7 @@ export function TimesheetsSection({
                       {busyId === t.id ? "Approving…" : "Approve"}
                     </Button>
                   ) : (
-                    <span className="text-xs text-muted">—</span>
+                    <span className="text-muted">—</span>
                   )}
                 </td>
               </tr>

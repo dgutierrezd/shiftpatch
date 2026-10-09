@@ -1,6 +1,5 @@
 import {
-  rowEnterClass,
-  staggerStyle,
+  linkClass,
   tableClass,
   tdClass,
   thClass,
@@ -33,16 +32,14 @@ export function DemoRequestsSection({ requests }: { requests: Loadable<DemoReque
       error={requests.data ? requests.error : null}
     >
       {rows.length > 0 && (
-        <ul className="mb-4 flex flex-wrap gap-2 text-xs">
-          <li className="rounded-full bg-brand-soft px-3 py-1 font-semibold text-brand-strong">
-            {rows.length} total
-          </li>
-          {Object.entries(byRole).map(([role, n]) => (
-            <li key={role} className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">
-              {role}: {n}
-            </li>
-          ))}
-        </ul>
+        <p className="mb-5 text-muted">
+          <span className="figure text-lead text-ink">{rows.length}</span>{" "}
+          {rows.length === 1 ? "request" : "requests"} so far —{" "}
+          {Object.entries(byRole)
+            .map(([role, n]) => `${role} ${n}`)
+            .join(", ")}
+          .
+        </p>
       )}
       <TableScroll>
         <table className={tableClass}>
@@ -57,11 +54,13 @@ export function DemoRequestsSection({ requests }: { requests: Loadable<DemoReque
             </tr>
           </thead>
           <tbody>
-            {rows.map((r, i) => (
-              <tr key={r.id} className={`${trClass} ${rowEnterClass}`} style={staggerStyle(i)}>
-                <td className={`${tdClass} whitespace-nowrap`}>{formatDateTime(r.createdAt)}</td>
+            {rows.map((r) => (
+              <tr key={r.id} className={trClass}>
+                <td className={`${tdClass} font-mono text-small whitespace-nowrap`}>
+                  {formatDateTime(r.createdAt)}
+                </td>
                 <td className={tdClass}>
-                  <a href={`mailto:${r.email}`} className="text-brand hover:underline">
+                  <a href={`mailto:${r.email}`} className={linkClass}>
                     {r.email}
                   </a>
                 </td>

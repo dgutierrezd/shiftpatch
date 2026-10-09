@@ -1,15 +1,9 @@
-import { rowEnterClass, Skeleton, staggerStyle } from "@/components/ui/primitives";
+import { type FigureItem, Figures } from "@/components/ui/figures";
+import { LoadingLine, Note, numClass, tdClass, thClass } from "@/components/ui/primitives";
 import { formatPercent } from "./format";
 import type { AdminReport, AgencyBreakdown, Loadable } from "./types";
 
-interface Tile {
-  label: string;
-  value: string;
-  hint?: string;
-  tone?: "default" | "warning" | "danger";
-}
-
-function tiles(report: AdminReport): Tile[] {
+function figures(report: AdminReport): FigureItem[] {
   const expiring = report.credentialsExpiringSoon.length;
   const noShows = report.cancellationsByReason["no-show"];
   return [
@@ -36,122 +30,82 @@ function tiles(report: AdminReport): Tile[] {
   ];
 }
 
-const ACCENT: Record<NonNullable<Tile["tone"]>, string> = {
-  default: "bg-brand/40",
-  warning: "bg-warning/60",
-  danger: "bg-danger/60",
-};
-
-const TONE: Record<NonNullable<Tile["tone"]>, string> = {
-  default: "text-foreground",
-  warning: "text-warning",
-  danger: "text-danger",
-};
-
 export function KpiTiles({ report }: { report: Loadable<AdminReport> }) {
   if (!report.data) {
     if (report.error) {
       return (
-        <div
-          className="rounded-xl border border-danger/30 bg-danger-soft p-5 text-sm text-danger shadow-sm"
-          role="alert"
-        >
+        <Note tone="danger" role="alert">
           Couldn’t load the report: {report.error}
-        </div>
+        </Note>
       );
     }
-    return (
-      <div role="status" className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <span className="sr-only">Loading report…</span>
-        {Array.from({ length: 6 }, (_, i) => (
-          <div
-            key={i}
-            className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-sm"
-          >
-            <Skeleton className="h-2.5 w-16" />
-            <Skeleton className="h-6 w-10" />
-          </div>
-        ))}
-      </div>
-    );
+    return <LoadingLine label="Loading report…" />;
   }
   return (
-    <div className="space-y-4">
+    <div className="space-y-10">
       {report.error && (
-        <p role="alert" className="rounded-md bg-danger-soft px-3 py-2 text-sm text-danger">
+        <Note tone="danger" role="alert">
           Couldn’t refresh the report: {report.error}
-        </p>
+        </Note>
       )}
-      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {tiles(report.data).map((t, i) => (
-          <div
-            key={t.label}
-            style={staggerStyle(i)}
-            className={`relative overflow-hidden rounded-xl border border-border bg-surface p-4 shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lift ${rowEnterClass}`}
-          >
-            <span
-              aria-hidden="true"
-              className={`absolute inset-x-0 top-0 h-0.5 ${ACCENT[t.tone ?? "default"]}`}
-            />
-            <dt className="text-xs font-medium text-muted">{t.label}</dt>
-            {/* Re-keyed on change so a new value ticks in after each poll. */}
-            <dd
-              key={t.value}
-              className={`mt-1 animate-tick text-2xl font-semibold tabular-nums ${TONE[t.tone ?? "default"]}`}
-            >
-              {t.value}
-            </dd>
-            {t.hint && <dd className="text-xs text-muted">{t.hint}</dd>}
-          </div>
-        ))}
-      </dl>
-      <AgencyBreakdownList rows={report.data.byAgency} />
+      <Figures
+        label="Key figures"
+        columns="grid-cols-2 sm:grid-cols-3 lg:grid-cols-6"
+        items={figures(report.data)}
+      />
+      <AgencyBreakdownTable rows={report.data.byAgency} />
     </div>
   );
 }
 
-function AgencyBreakdownList({ rows }: { rows: AgencyBreakdown[] }) {
+/** Coverage by agency as a small report table with a thin fill bar. */
+function AgencyBreakdownTable({ rows }: { rows: AgencyBreakdown[] }) {
   if (rows.length === 0) return null;
   return (
-    <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold">By agency</h3>
-        <div className="flex gap-4 text-xs text-muted" aria-hidden="true">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-sm bg-success" /> Filled
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-sm bg-brand-soft ring-1 ring-brand/30" /> Open
-          </span>
-        </div>
+    <div>
+      <h3 className="mb-3 text-lead text-ink">Coverage by agency</h3>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[30rem] border-t border-ink text-left text-[0.875rem]">
+          <thead className="border-b border-rule text-small text-muted">
+            <tr>
+              <th scope="col" className={thClass}>
+                Agency
+              </th>
+              <th scope="col" className={`${thClass} ${numClass}`}>
+                Filled
+              </th>
+              <th scope="col" className={`${thClass} ${numClass}`}>
+                Open
+              </th>
+              <th scope="col" className={`${thClass} ${numClass}`}>
+                Fill rate
+              </th>
+              <th scope="col" className={`${thClass} w-[34%]`}>
+                <span className="sr-only">Fill rate bar</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((a) => {
+              const total = a.open + a.filled;
+              const pct = total === 0 ? 0 : Math.round((a.filled / total) * 100);
+              return (
+                <tr key={a.agencyId} className="border-b border-rule last:border-0">
+                  <td className={tdClass}>{a.agencyName}</td>
+                  <td className={`${tdClass} ${numClass}`}>{a.filled}</td>
+                  <td className={`${tdClass} ${numClass}`}>{a.open}</td>
+                  <td className={`${tdClass} ${numClass}`}>{total === 0 ? "—" : `${pct}%`}</td>
+                  <td className={tdClass}>
+                    <div aria-hidden="true" className="h-1 bg-rule">
+                      <div className="h-full bg-accent" style={{ width: `${pct}%` }} />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-      <ul className="space-y-3">
-        {rows.map((a) => {
-          const total = a.open + a.filled;
-          const filledPct = total === 0 ? 0 : (a.filled / total) * 100;
-          return (
-            <li
-              key={a.agencyId}
-              className="grid gap-1.5 sm:grid-cols-[12rem_1fr_auto] sm:items-center sm:gap-4"
-            >
-              <span className="truncate text-sm font-medium">{a.agencyName}</span>
-              <div
-                className="flex h-2.5 overflow-hidden rounded-full bg-brand-soft"
-                role="img"
-                aria-label={`${a.agencyName}: ${a.filled} filled, ${a.open} open`}
-              >
-                <div
-                  className="bg-success transition-[width] duration-700 ease-out-soft"
-                  style={{ width: `${filledPct}%` }}
-                />
-              </div>
-              <span className="text-xs text-muted tabular-nums">
-                {a.filled} filled · {a.open} open
-              </span>
-            </li>
-          );
-        })}
-      </ul>
     </div>
   );
 }
