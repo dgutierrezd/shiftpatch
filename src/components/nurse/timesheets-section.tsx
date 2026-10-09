@@ -8,6 +8,9 @@ import {
   Card,
   EmptyRow,
   Input,
+  rowEnterClass,
+  SkeletonRows,
+  staggerStyle,
   tableClass,
   tdClass,
   theadClass,
@@ -103,14 +106,16 @@ export function TimesheetsSection({
           </thead>
           <tbody>
             {rows.length === 0 ? (
-              <EmptyRow colSpan={COLUMNS.length}>
-                {timesheets.data === null && !timesheets.error
-                  ? "Loading timesheets…"
-                  : "No timesheets yet. They appear here once you work a claimed shift."}
-              </EmptyRow>
+              timesheets.data === null && !timesheets.error ? (
+                <SkeletonRows colSpan={COLUMNS.length} label="Loading timesheets…" rows={2} />
+              ) : (
+                <EmptyRow colSpan={COLUMNS.length}>
+                  No timesheets yet. They appear here once you work a claimed shift.
+                </EmptyRow>
+              )
             ) : (
-              rows.map((t) => (
-                <tr key={t.id} className={trClass}>
+              rows.map((t, i) => (
+                <tr key={t.id} style={staggerStyle(i)} className={`${trClass} ${rowEnterClass}`}>
                   <td className={tdClass}>
                     <span className="font-medium">{formatDay(t.date)}</span>
                     <span className="block text-xs text-muted">

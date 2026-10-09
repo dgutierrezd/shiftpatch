@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
-import { Button, Card } from "@/components/ui/primitives";
+import { Button, Card, EmptyState } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
 import { formatTimestamp } from "./format";
 import { SectionStatus } from "./section-status";
@@ -38,20 +38,27 @@ export function NotificationsSection({
   return (
     <Card
       title="Notifications"
-      actions={unread > 0 ? <span className="text-sm text-muted">{unread} unread</span> : undefined}
+      actions={
+        unread > 0 ? (
+          <span className="rounded-full bg-brand px-2 py-0.5 text-xs font-semibold text-white tabular-nums">
+            {unread} unread
+          </span>
+        ) : undefined
+      }
     >
       <SectionStatus resource={notifications} label="notifications" />
       {notifications.data !== null && list.length === 0 ? (
-        <p className="text-sm text-muted">You&apos;re all caught up.</p>
+        <EmptyState>You&apos;re all caught up.</EmptyState>
       ) : (
         <ul className="max-h-96 divide-y divide-border overflow-y-auto">
           {list.map((n) => (
-            <li key={n.id} className="flex items-start justify-between gap-3 py-2.5">
+            <li key={n.id} className="flex animate-fade items-start justify-between gap-3 py-2.5">
               <div className="min-w-0">
                 <p className={`text-sm ${n.readAt ? "text-muted" : "font-medium"}`}>
                   {n.readAt === null && (
                     <span
-                      className="mr-1.5 inline-block size-2 rounded-full bg-brand"
+                      className="mr-1.5 inline-block size-2 rounded-full bg-brand align-middle"
+                      role="img"
                       aria-label="Unread"
                     />
                   )}

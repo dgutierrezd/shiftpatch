@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
-import { Button, Card } from "@/components/ui/primitives";
+import { Button, Card, EmptyState, rowEnterClass, staggerStyle } from "@/components/ui/primitives";
+import { useFreshIds } from "@/components/ui/use-fresh-ids";
 import { api, errorMessage } from "@/lib/api-client";
 import { track } from "@/lib/analytics";
 import { SectionStatus } from "./section-status";
@@ -23,6 +24,7 @@ export function MyShiftsSection({
   const notify = useNotify();
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const mine = (shifts.data ?? []).filter((s) => s.claimedBy === userId && s.status === "filled");
+  const fresh = useFreshIds(shifts.data ? mine.map((s) => s.id) : null);
 
   async function cancel(id: string) {
     setCancellingId(id);
@@ -44,15 +46,16 @@ export function MyShiftsSection({
     <Card title="My shifts">
       <SectionStatus resource={shifts} label="your shifts" />
       {shifts.data !== null && mine.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted">
-          You haven&apos;t claimed any upcoming shifts yet.
-        </p>
+        <EmptyState>You haven&apos;t claimed any upcoming shifts yet.</EmptyState>
       ) : (
         <ul className="divide-y divide-border">
-          {mine.map((shift) => (
+          {mine.map((shift, i) => (
             <li
               key={shift.id}
-              className="flex flex-col gap-3 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+              style={staggerStyle(i)}
+              className={`-mx-2 flex flex-col gap-3 rounded-lg px-2 py-3 sm:flex-row sm:items-center sm:justify-between ${
+                fresh.has(shift.id) ? "animate-flash" : rowEnterClass
+              }`}
             >
               <ShiftSummary shift={shift} />
               <Button
