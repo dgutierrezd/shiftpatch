@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Field, Input, Select } from "@/components/ui/primitives";
 import { track } from "@/lib/analytics";
 import { api, errorMessage } from "@/lib/api-client";
@@ -16,6 +16,12 @@ const ROLES = [
 export function WaitlistForm() {
   const [state, setState] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
+  const doneRef = useRef<HTMLDivElement>(null);
+
+  // Move focus to the confirmation so keyboard and screen-reader users land on it.
+  useEffect(() => {
+    if (state === "done") doneRef.current?.focus();
+  }, [state]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -42,19 +48,47 @@ export function WaitlistForm() {
 
   if (state === "done") {
     return (
-      <p
-        className="rounded-md bg-success-soft px-4 py-3 text-sm font-medium text-success"
+      <div
+        ref={doneRef}
+        tabIndex={-1}
         role="status"
+        className="flex animate-rise flex-col items-center gap-3 rounded-xl border border-success/25 bg-success-soft/60 px-5 py-8 text-center outline-none"
       >
-        Thanks — we&apos;ll be in touch to schedule a walkthrough.
-      </p>
+        <span
+          aria-hidden="true"
+          className="flex size-12 animate-pop items-center justify-center rounded-full bg-success text-white shadow-lift"
+        >
+          <svg viewBox="0 0 16 16" className="size-6" fill="none">
+            <path
+              d="M3.5 8.5l3 3 6-7"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={24}
+              className="animate-draw"
+            />
+          </svg>
+        </span>
+        <p className="font-semibold text-foreground">You&apos;re on the list</p>
+        <p className="text-sm font-medium text-success">
+          Thanks — we&apos;ll be in touch to schedule a walkthrough.
+        </p>
+      </div>
     );
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <Field label="Work email" htmlFor="waitlist-email">
-        <Input id="waitlist-email" name="email" type="email" autoComplete="email" required />
+        <Input
+          id="waitlist-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@hospital.org"
+          required
+        />
       </Field>
       <Field label="Organization" htmlFor="waitlist-org">
         <Input id="waitlist-org" name="organization" autoComplete="organization" maxLength={120} />
@@ -73,8 +107,23 @@ export function WaitlistForm() {
         </p>
       )}
       <Button type="submit" className="w-full" disabled={state === "sending"}>
-        {state === "sending" ? "Sending…" : "Request a walkthrough"}
+        {state === "sending" ? (
+          <>
+            <Spinner /> Sending…
+          </>
+        ) : (
+          "Request a walkthrough"
+        )}
       </Button>
     </form>
+  );
+}
+
+function Spinner() {
+  return (
+    <span
+      aria-hidden="true"
+      className="size-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white motion-reduce:hidden"
+    />
   );
 }
