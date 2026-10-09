@@ -6,6 +6,7 @@ import type {
   AdminReport,
   AuditEntry,
   CredentialDto,
+  DemoRequestDto,
   Loadable,
   ShiftDto,
   TimesheetDto,
@@ -19,6 +20,7 @@ export interface AdminData {
   credentials: Loadable<CredentialDto[]>;
   timesheets: Loadable<TimesheetDto[]>;
   audit: Loadable<AuditEntry[]>;
+  demoRequests: Loadable<DemoRequestDto[]>;
 }
 
 type Key = keyof AdminData;
@@ -29,6 +31,7 @@ const SOURCES: Record<Key, () => Promise<unknown>> = {
   credentials: () => apiList<CredentialDto>("/api/credentials?status=pending", "credentials"),
   timesheets: () => apiList<TimesheetDto>("/api/timesheets", "timesheets"),
   audit: () => apiList<AuditEntry>("/api/audit-log?limit=100", "entries"),
+  demoRequests: () => apiList<DemoRequestDto>("/api/admin/demo-requests", "requests"),
 };
 
 const KEYS = Object.keys(SOURCES) as Key[];
@@ -39,6 +42,7 @@ const INITIAL: AdminData = {
   credentials: { data: null, error: null },
   timesheets: { data: null, error: null },
   audit: { data: null, error: null },
+  demoRequests: { data: null, error: null },
 };
 
 /**

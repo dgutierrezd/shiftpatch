@@ -93,3 +93,11 @@ export interface Loadable<T> {
   data: T | null;
   error: string | null;
 }
+
+export interface DemoRequestDto {
+  id: string;
+  email: string;
+  organization: string | null;
+  role: string | null;
+  createdAt: string;
+}

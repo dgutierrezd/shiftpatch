@@ -3,6 +3,7 @@
 import { AuditSection } from "./audit-section";
 import { ComplianceSection } from "./compliance-section";
 import { CredentialsSection } from "./credentials-section";
+import { DemoRequestsSection } from "./demo-requests-section";
 import { formatClock } from "./format";
 import { KpiTiles } from "./kpi-tiles";
 import { ResetSection } from "./reset-section";
@@ -15,6 +16,7 @@ const ANCHORS: Anchor[] = [
   { id: "shifts", label: "Shifts" },
   { id: "credentials", label: "Credentials" },
   { id: "timesheets", label: "Timesheets" },
+  { id: "demo-requests", label: "Demo requests" },
   { id: "audit", label: "Audit log" },
   { id: "compliance", label: "Compliance report" },
 ];
@@ -85,6 +87,9 @@ export function AdminDashboard() {
       </div>
       <div className="print:hidden">
         <TimesheetsSection timesheets={data.timesheets} onChanged={refresh} />
+      </div>
+      <div className="print:hidden">
+        <DemoRequestsSection requests={data.demoRequests} />
       </div>
       <div className="print:hidden">
         <AuditSection audit={data.audit} />
