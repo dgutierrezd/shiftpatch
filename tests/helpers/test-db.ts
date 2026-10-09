@@ -1,4 +1,5 @@
 import { PGlite } from "@electric-sql/pglite";
+import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { setDbForTesting } from "@/server/db/client";
 import { applyMigrations } from "@/server/db/migrate";
@@ -23,7 +24,12 @@ export async function createTestDb(): Promise<{
   setDbForTesting(db);
   return {
     db,
-    reset: () => reseed(db),
+    // reseed() keeps the audit log and waitlist (production behavior); tests also clear
+    // them so every test starts isolated.
+    reset: async () => {
+      await reseed(db);
+      await db.execute(sql`TRUNCATE audit_log, waitlist RESTART IDENTITY`);
+    },
     close: async () => {
       setDbForTesting(null);
       await client.close();

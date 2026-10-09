@@ -16,14 +16,15 @@ let cachedHash: Promise<string> | null = null;
 const passwordHash = () => (cachedHash ??= bcrypt.hash(SEED_PASSWORD, 10));
 
 /**
- * Idempotent: restores the exact spec sample data. The audit log is deliberately kept —
- * a demo reset must not erase history (the reset itself is audited by the caller).
+ * Idempotent: restores the exact spec sample data. The audit log and the demo-request
+ * waitlist are deliberately kept — a demo reset must not erase history or real leads
+ * (the reset itself is audited by the caller).
  */
 export async function reseed(db: Db): Promise<void> {
   const hash = await passwordHash();
   await db.transaction(async (tx) => {
     await tx.execute(sql`TRUNCATE notifications, timesheets, cancellations, credentials,
-      shifts, users, agencies, login_attempts, waitlist RESTART IDENTITY CASCADE`);
+      shifts, users, agencies, login_attempts RESTART IDENTITY CASCADE`);
     await tx.execute(sql.raw(`ALTER SEQUENCE shift_seq RESTART WITH ${NEXT_SHIFT_NUMBER}`));
     await tx.insert(agencies).values([...seedAgencies]);
     await tx.insert(users).values(seedUsers.map((u) => ({ ...u, passwordHash: hash })));

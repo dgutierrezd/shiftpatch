@@ -4,7 +4,7 @@ import { GET as report } from "@/app/api/admin/report/route";
 import { POST as complianceReport } from "@/app/api/admin/compliance-report/route";
 import { POST as reset } from "@/app/api/admin/reset/route";
 import { GET as auditLog } from "@/app/api/audit-log/route";
-import { cancellations, shifts } from "@/server/db/schema";
+import { cancellations, shifts, waitlist } from "@/server/db/schema";
 import { recordAudit } from "@/server/services/audit";
 import { apiRequest } from "../helpers/http";
 import { ACTORS, mintTokens, type Tokens } from "../helpers/product-tokens";
@@ -201,10 +201,22 @@ describe("POST /api/admin/reset", () => {
     expect((await call(t.agencyA)).status).toBe(403);
   });
 
+  it("keeps demo requests (waitlist) across a reset — they are real leads", async () => {
+    process.env.ALLOW_DEMO_RESET = "true";
+    await ctx.db
+      .insert(waitlist)
+      .values({ email: "ops.manager@hospital.example", role: "Staffing director" });
+    expect((await call(t.admin)).status).toBe(200);
+    expect(await ctx.db.select().from(waitlist)).toHaveLength(1);
+  });
+
   it("restores the seed and audits the reset", async () => {
     process.env.ALLOW_DEMO_RESET = "true";
     await ctx.db.update(shifts).set({ status: "filled", claimedBy: "nurse-1" });
     await ctx.db.execute(sql`SELECT nextval('shift_seq')`);
+    await ctx.db.execute(
+      sql`INSERT INTO audit_log (actor_id, actor_role, action, entity, entity_id) VALUES ('agency-a', 'agency', 'shift.created', 'shift', 'shift-4')`,
+    );
     const res = await call(t.admin);
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true });
