@@ -112,7 +112,11 @@ export async function agencyUserIds(db: Db, agencyId: string): Promise<string[]>
 
 export function nurseCredentials(db: Db, nurseId: string): Promise<CredentialFact[]> {
   return db
-    .select({ type: credentials.type, status: credentials.status, expiresAt: credentials.expiresAt })
+    .select({
+      type: credentials.type,
+      status: credentials.status,
+      expiresAt: credentials.expiresAt,
+    })
     .from(credentials)
     .where(eq(credentials.nurseId, nurseId));
 }
@@ -124,7 +128,11 @@ export async function insertTimesheet(
   await db.insert(timesheets).values(values);
 }
 
-export async function voidActiveTimesheets(db: Db, shiftId: string, nurseId: string): Promise<void> {
+export async function voidActiveTimesheets(
+  db: Db,
+  shiftId: string,
+  nurseId: string,
+): Promise<void> {
   await db
     .update(timesheets)
     .set({ status: "void" })
