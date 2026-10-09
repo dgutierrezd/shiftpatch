@@ -6,36 +6,84 @@ import type {
   SelectHTMLAttributes,
 } from "react";
 
-type Variant = "primary" | "secondary" | "danger" | "ghost";
+type Variant = "primary" | "secondary" | "danger" | "quiet" | "ghost";
+type Size = "md" | "sm";
 
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-brand text-white shadow-sm hover:bg-brand-strong hover:shadow-md",
-  secondary:
-    "border border-border bg-surface text-foreground shadow-xs hover:border-slate-300 hover:bg-slate-50",
-  danger: "border border-danger/30 bg-surface text-danger hover:bg-danger-soft",
-  ghost: "text-muted hover:bg-slate-100 hover:text-foreground",
+  primary: "bg-accent text-white hover:bg-accent-hover",
+  secondary: "border border-rule bg-paper text-ink hover:border-muted",
+  danger: "border border-danger/70 bg-transparent text-danger hover:border-danger hover:bg-danger/5",
+  quiet: "text-accent underline-offset-4 hover:underline",
+  /** @deprecated Use "quiet". */
+  ghost: "text-accent underline-offset-4 hover:underline",
 };
+
+const SIZES: Record<Size, string> = {
+  md: "h-9 px-3.5 text-[0.875rem]",
+  sm: "h-7 px-2.5 text-small",
+};
+
+/** Shared focus ring: a 2px ink-blue outline, offset from the control. */
+export const focusRing =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export function Button({
   variant = "primary",
+  size = "md",
   className = "",
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; size?: Size }) {
   return (
     <button
       type="button"
       {...props}
-      className={`inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] disabled:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTS[variant]} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-55 ${focusRing} ${SIZES[size]} ${VARIANTS[variant]} ${className}`}
     />
   );
 }
 
+/** Inline text link styling for anchors and Next links. */
+export const linkClass = `text-accent underline decoration-accent/30 underline-offset-[3px] transition-colors hover:decoration-accent ${focusRing} rounded-[2px]`;
+
+/**
+ * An editorial section: serif heading, an optional one-line dek in muted sans, and content
+ * underneath. Sections are separated by a hairline and whitespace — no boxes, no shadows.
+ */
+export function Section({
+  id,
+  title,
+  dek,
+  actions,
+  children,
+  className = "",
+}: {
+  id?: string;
+  title: ReactNode;
+  dek?: ReactNode;
+  actions?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section id={id} className={`scroll-mt-16 border-t border-rule pt-6 ${className}`}>
+      <header className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+        <div className="min-w-0">
+          <h2 className="text-heading text-ink">{title}</h2>
+          {dek && <p className="mt-1 max-w-[46rem] text-muted">{dek}</p>}
+        </div>
+        {actions}
+      </header>
+      {children}
+    </section>
+  );
+}
+
+/** @deprecated Legacy box; use `Section`. Kept until every caller migrates. */
 export function Card({
   title,
   actions,
   children,
   className = "",
-  style,
 }: {
   title?: ReactNode;
   actions?: ReactNode;
@@ -44,18 +92,9 @@ export function Card({
   style?: CSSProperties;
 }) {
   return (
-    <section
-      style={style}
-      className={`rounded-xl border border-border bg-surface shadow-sm ${className}`}
-    >
-      {(title || actions) && (
-        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
-          {title && <h2 className="text-base font-semibold tracking-tight">{title}</h2>}
-          {actions}
-        </header>
-      )}
-      <div className="p-5">{children}</div>
-    </section>
+    <Section title={title ?? ""} actions={actions} className={className}>
+      {children}
+    </Section>
   );
 }
 
@@ -72,131 +111,116 @@ export function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={htmlFor} className="text-sm font-medium">
+      <label htmlFor={htmlFor} className="text-small font-medium text-ink">
         {label}
       </label>
       {children}
-      {hint && <p className="text-xs text-muted">{hint}</p>}
+      {hint && <p className="text-small text-muted">{hint}</p>}
     </div>
   );
 }
 
 const control =
-  "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm shadow-xs transition-[border-color,box-shadow] duration-150 hover:border-slate-300 focus:border-brand focus:outline-none focus:ring-3 focus:ring-brand/20 aria-invalid:border-danger/60";
+  "h-10 w-full rounded-[4px] border border-rule bg-surface px-3 text-body text-ink transition-colors duration-150 placeholder:text-muted/70 hover:border-muted/60 focus:border-accent focus:outline-1 focus:outline-accent aria-invalid:border-danger";
 
 export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${control} ${props.className ?? ""}`} />;
 }
 
 export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select {...props} className={`${control} ${props.className ?? ""}`} />;
+  return <select {...props} className={`${control} pr-8 ${props.className ?? ""}`} />;
+}
+
+/** A note set off by a 3px left rule in the tone's color; ink text, no icon. */
+export function Note({
+  tone,
+  children,
+  role,
+  className = "",
+}: {
+  tone: "warning" | "danger" | "success";
+  children: ReactNode;
+  role?: "note" | "alert" | "status";
+  className?: string;
+}) {
+  const rule = { warning: "border-l-warning", danger: "border-l-danger", success: "border-l-success" };
+  return (
+    <div
+      role={role}
+      className={`border border-l-[3px] border-rule bg-paper px-4 py-3 text-ink ${rule[tone]} ${className}`}
+    >
+      {children}
+    </div>
+  );
 }
 
 export function EmptyRow({ colSpan, children }: { colSpan: number; children: ReactNode }) {
   return (
     <tr>
-      <td colSpan={colSpan} className="px-4 py-8 text-center text-sm text-muted">
-        <span className="inline-flex animate-fade flex-col items-center gap-2">
-          <EmptyIcon />
-          <span>{children}</span>
-        </span>
+      <td colSpan={colSpan} className="py-6 text-muted">
+        {children}
       </td>
     </tr>
   );
 }
 
-/** Small decorative tray icon for empty lists and tables. */
-export function EmptyIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.6}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`size-8 rounded-full bg-slate-100 p-1.5 text-slate-400 ${className}`}
-    >
-      <path d="M4 13.5 6.2 6.6A1.5 1.5 0 0 1 7.6 5.5h8.8a1.5 1.5 0 0 1 1.4 1.1L20 13.5" />
-      <path d="M4 13.5V17a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 17v-3.5h-4.5l-1 2h-5l-1-2Z" />
-    </svg>
-  );
-}
-
-/** Centered empty state for non-table lists. */
+/** Plain empty message for non-table lists. */
 export function EmptyState({ children }: { children: ReactNode }) {
+  return <p className="py-3 text-muted">{children}</p>;
+}
+
+/** One quiet line while a list loads; announced to screen readers. */
+export function LoadingLine({ label }: { label: string }) {
   return (
-    <div className="flex animate-fade flex-col items-center gap-2 py-6 text-center text-sm text-muted">
-      <EmptyIcon />
-      <p>{children}</p>
-    </div>
+    <p role="status" className="py-3 text-muted">
+      {label}
+    </p>
   );
 }
 
-/** Shimmering placeholder block; decorative only. */
+/** A single table row while the body loads, so the table (and its test ID) always renders. */
+export function LoadingRow({ colSpan, label }: { colSpan: number; label: string }) {
+  return (
+    <tr>
+      <td colSpan={colSpan} className="py-6 text-muted">
+        <span role="status">{label}</span>
+      </td>
+    </tr>
+  );
+}
+
+/** @deprecated Use `LoadingLine`. */
+export function SkeletonList({ label }: { label: string; rows?: number }) {
+  return <LoadingLine label={label} />;
+}
+
+/** @deprecated Use `LoadingRow`. */
+export function SkeletonRows({ colSpan, label }: { colSpan: number; label: string; rows?: number }) {
+  return <LoadingRow colSpan={colSpan} label={label} />;
+}
+
+/** @deprecated Decorative placeholder; renders a flat tint block. */
 export function Skeleton({ className = "" }: { className?: string }) {
   return <span aria-hidden="true" className={`skeleton block h-3 ${className}`} />;
 }
 
-/** Placeholder lines for a list while it loads; the label is announced to screen readers. */
-export function SkeletonList({ label, rows = 3 }: { label: string; rows?: number }) {
-  return (
-    <div role="status" className="mb-4 space-y-3">
-      <span className="sr-only">{label}</span>
-      {Array.from({ length: rows }, (_, i) => (
-        <div key={i} className="flex items-center justify-between gap-4">
-          <div className="flex-1 space-y-2">
-            <Skeleton className="w-2/5" />
-            <Skeleton className="h-2.5 w-3/5" />
-          </div>
-          <Skeleton className="h-8 w-24" />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/** Skeleton table rows so the table (and its header / test ID) renders while loading. */
-export function SkeletonRows({
-  colSpan,
-  label,
-  rows = 3,
-}: {
-  colSpan: number;
-  label: string;
-  rows?: number;
-}) {
-  return (
-    <>
-      {Array.from({ length: rows }, (_, r) => (
-        <tr key={r} className={trClass} aria-hidden={r > 0 ? true : undefined}>
-          {Array.from({ length: colSpan }, (_, c) => (
-            <td key={c} className={tdClass}>
-              {r === 0 && c === 0 && (
-                <span role="status" className="sr-only">
-                  {label}
-                </span>
-              )}
-              <Skeleton className={c === 0 ? "w-24" : c % 2 ? "w-16" : "w-20"} />
-            </td>
-          ))}
-        </tr>
-      ))}
-    </>
-  );
-}
-
-/** Style for staggered entrance: pair with `animate-rise stagger`. */
+/** @deprecated No-op: entrances are no longer staggered. */
 export function staggerStyle(index: number): CSSProperties {
-  return { "--i": index } as CSSProperties;
+  void index;
+  return {};
 }
 
-export const tableClass = "w-full min-w-[640px] text-left text-sm";
-export const theadClass = "border-b border-border text-xs uppercase tracking-wide text-muted";
-export const thClass = "px-4 py-2.5 font-medium";
-export const tdClass = "px-4 py-3 align-middle";
-export const trClass =
-  "border-b border-border transition-colors duration-150 last:border-0 hover:bg-slate-50/70";
-/** Row entrance (opacity/translate only, mount-time) — rows unmount instantly on removal. */
-export const rowEnterClass = "animate-rise stagger";
+/* Report tables: an ink rule above the header, hairline rows, no zebra striping. */
+export const tableClass = "w-full min-w-[640px] border-t border-ink text-left text-[0.875rem]";
+export const theadClass = "border-b border-rule text-small text-muted";
+export const thClass = "px-3 py-2.5 font-medium first:pl-0 last:pr-0";
+export const tdClass = "px-3 py-3 align-middle first:pl-0 last:pr-0";
+export const trClass = "border-b border-rule last:border-0";
+/** Right-aligned numeric cell / header. */
+export const numClass = "text-right tabular-nums";
+/** Mono identifiers (shift ids, user ids, license numbers). */
+export const idClass = "font-mono text-small text-ink";
+/** Optional settle highlight for a row that just appeared; exits stay instant. */
+export const freshRowClass = "animate-settle";
+/** @deprecated Rows no longer animate in. */
+export const rowEnterClass = "";

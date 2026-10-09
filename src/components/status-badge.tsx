@@ -1,27 +1,46 @@
-const STYLES: Record<string, string> = {
-  open: "bg-brand-soft text-brand-strong",
-  filled: "bg-success-soft text-success",
-  cancelled: "bg-slate-100 text-slate-600",
-  pending: "bg-warning-soft text-warning",
-  submitted: "bg-warning-soft text-warning",
-  verified: "bg-success-soft text-success",
-  approved: "bg-success-soft text-success",
-  rejected: "bg-danger-soft text-danger",
-  expired: "bg-danger-soft text-danger",
-  void: "bg-slate-100 text-slate-600",
+const TONE: Record<string, string> = {
+  open: "text-accent",
+  filled: "text-success",
+  cancelled: "text-muted",
+  pending: "text-warning",
+  submitted: "text-warning",
+  verified: "text-success",
+  approved: "text-success",
+  rejected: "text-danger",
+  expired: "text-danger",
+  void: "text-muted",
 };
 
-/** Text is rendered literally in lowercase (no CSS text-transform) so scripts can read it. */
+/** ○ still open / waiting, ● settled, ✕ ended. Decorative; the word carries the meaning. */
+const GLYPH: Record<string, string> = {
+  open: "○",
+  pending: "○",
+  submitted: "○",
+  filled: "●",
+  verified: "●",
+  approved: "●",
+  cancelled: "✕",
+  rejected: "✕",
+  expired: "✕",
+  void: "✕",
+};
+
+/**
+ * Status set as a small colored word, not a pill. The test-ID element holds only the literal
+ * lowercase status (no CSS text-transform), so scripts read exactly "open" / "filled" / ….
+ */
 export function StatusBadge({ status, testId }: { status: string; testId?: string }) {
+  const glyph = GLYPH[status];
   return (
     <span
-      data-testid={testId}
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors duration-300 ${
-        STYLES[status] ?? "bg-slate-100 text-slate-700"
-      }`}
+      className={`inline-flex items-baseline gap-1.5 text-small whitespace-nowrap ${TONE[status] ?? "text-muted"}`}
     >
-      <span aria-hidden="true" className="size-1.5 rounded-full bg-current opacity-70" />
-      {status}
+      {glyph && (
+        <span aria-hidden="true" className="relative -top-px text-[0.6875rem] leading-none">
+          {glyph}
+        </span>
+      )}
+      <span data-testid={testId}>{status}</span>
     </span>
   );
 }
