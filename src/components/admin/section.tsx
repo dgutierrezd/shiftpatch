@@ -39,7 +39,12 @@ export function AdminSection({
 /** Tables scroll horizontally on narrow screens instead of breaking the layout. */
 export function TableScroll({ children }: { children: ReactNode }) {
   return (
-    <div className="-mx-5 overflow-x-auto px-5" tabIndex={0} role="group" aria-label="Scrollable table">
+    <div
+      className="-mx-5 overflow-x-auto px-5"
+      tabIndex={0}
+      role="group"
+      aria-label="Scrollable table"
+    >
       {children}
     </div>
   );
@@ -63,6 +68,7 @@ export function TableStatus<T>({
   if (rows > 0) return null;
   if (resource.data === null && resource.error === null)
     return <EmptyRow colSpan={colSpan}>Loading…</EmptyRow>;
-  if (resource.data === null) return <EmptyRow colSpan={colSpan}>Couldn’t load: {resource.error}</EmptyRow>;
+  if (resource.data === null)
+    return <EmptyRow colSpan={colSpan}>Couldn’t load: {resource.error}</EmptyRow>;
   return <EmptyRow colSpan={colSpan}>{empty}</EmptyRow>;
 }

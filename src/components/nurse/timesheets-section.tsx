@@ -31,13 +31,20 @@ function SubmitHours({ sheet, onChanged }: { sheet: TimesheetDto; onChanged: () 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const workedHours = Number(hours);
-    if (hours.trim() === "" || !Number.isFinite(workedHours) || workedHours < 0 || workedHours > 24) {
+    if (
+      hours.trim() === "" ||
+      !Number.isFinite(workedHours) ||
+      workedHours < 0 ||
+      workedHours > 24
+    ) {
       notify("error", "Worked hours must be between 0 and 24");
       return;
     }
     setPending(true);
     try {
-      await api(`/api/timesheets/${encodeURIComponent(sheet.id)}/submit`, { body: { workedHours } });
+      await api(`/api/timesheets/${encodeURIComponent(sheet.id)}/submit`, {
+        body: { workedHours },
+      });
       notify("success", "Timesheet submitted");
       onChanged();
     } catch (err) {

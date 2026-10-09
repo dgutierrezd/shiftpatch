@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
-import { Button, tableClass, tdClass, thClass, theadClass, trClass } from "@/components/ui/primitives";
+import {
+  Button,
+  tableClass,
+  tdClass,
+  thClass,
+  theadClass,
+  trClass,
+} from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
 import { credentialLabel, expiryHint, formatDateTime } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
@@ -32,10 +39,7 @@ export function CredentialsSection({
       await api(`/api/credentials/${encodeURIComponent(credential.id)}/review`, {
         body: { decision },
       });
-      notify(
-        "success",
-        decision === "verified" ? "Credential verified" : "Credential rejected",
-      );
+      notify("success", decision === "verified" ? "Credential verified" : "Credential rejected");
       await onChanged();
     } catch (err) {
       notify("error", errorMessage(err));

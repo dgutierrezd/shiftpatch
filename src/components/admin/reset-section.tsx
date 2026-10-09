@@ -53,7 +53,12 @@ export function ResetSection({ onReset }: { onReset: () => Promise<void> }) {
           Restore the original sample shifts, users and credentials. Everything created since is
           removed.
         </p>
-        <Button variant="danger" onClick={() => void onClick()} disabled={pending} aria-live="polite">
+        <Button
+          variant="danger"
+          onClick={() => void onClick()}
+          disabled={pending}
+          aria-live="polite"
+        >
           {pending ? "Resetting…" : armed ? "Click again to confirm" : "Reset demo data"}
         </Button>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, errorMessage } from "@/lib/api-client";
+import { api, apiList, errorMessage } from "@/lib/api-client";
 import type {
   AdminReport,
   AuditEntry,
@@ -23,12 +23,12 @@ export interface AdminData {
 
 type Key = keyof AdminData;
 
-const SOURCES: Record<Key, string> = {
-  report: "/api/admin/report",
-  shifts: "/api/shifts",
-  credentials: "/api/credentials?status=pending",
-  timesheets: "/api/timesheets",
-  audit: "/api/audit-log?limit=100",
+const SOURCES: Record<Key, () => Promise<unknown>> = {
+  report: () => api<AdminReport>("/api/admin/report"),
+  shifts: () => apiList<ShiftDto>("/api/shifts", "shifts"),
+  credentials: () => apiList<CredentialDto>("/api/credentials?status=pending", "credentials"),
+  timesheets: () => apiList<TimesheetDto>("/api/timesheets", "timesheets"),
+  audit: () => apiList<AuditEntry>("/api/audit-log?limit=100", "entries"),
 };
 
 const KEYS = Object.keys(SOURCES) as Key[];
@@ -53,7 +53,7 @@ export function useAdminData() {
 
   const refresh = useCallback(async () => {
     const mine = ++seq.current;
-    const results = await Promise.allSettled(KEYS.map((key) => api<unknown>(SOURCES[key])));
+    const results = await Promise.allSettled(KEYS.map((key) => SOURCES[key]()));
     if (mine !== seq.current) return; // superseded by a newer refresh
     setData((prev) => {
       const next: Record<Key, Loadable<unknown>> = { ...prev };

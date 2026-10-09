@@ -14,7 +14,8 @@ function validate(type: CredentialType, file: File | null, expiresAt: string, to
   if (type === "license") {
     if (!file) return "Choose a PDF, PNG or JPEG of your license.";
     if (file.size > MAX_BYTES) return "The file must be 4 MB or smaller.";
-    if (file.type && !ACCEPTED.includes(file.type)) return "Only PDF, PNG or JPEG files are accepted.";
+    if (file.type && !ACCEPTED.includes(file.type))
+      return "Only PDF, PNG or JPEG files are accepted.";
   }
   if (!expiresAt) return "Enter the expiry date.";
   if (expiresAt < today) return "The expiry date can't be in the past.";
@@ -22,7 +23,13 @@ function validate(type: CredentialType, file: File | null, expiresAt: string, to
 }
 
 /** Multipart upload to POST /api/credentials. New records stay pending until an admin verifies. */
-export function CredentialUploadForm({ today, onChanged }: { today: string; onChanged: () => void }) {
+export function CredentialUploadForm({
+  today,
+  onChanged,
+}: {
+  today: string;
+  onChanged: () => void;
+}) {
   const notify = useNotify();
   const formRef = useRef<HTMLFormElement>(null);
   const [type, setType] = useState<CredentialType>("license");

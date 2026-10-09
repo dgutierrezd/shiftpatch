@@ -40,7 +40,10 @@ export function OpenShiftsSection({
   }
 
   return (
-    <Card title="Open shifts" actions={<span className="text-sm text-muted">{open.length} available</span>}>
+    <Card
+      title="Open shifts"
+      actions={<span className="text-sm text-muted">{open.length} available</span>}
+    >
       {credentialsNeedAttention && (
         <div
           role="note"

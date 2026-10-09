@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
-import { Button, tableClass, tdClass, thClass, theadClass, trClass } from "@/components/ui/primitives";
+import {
+  Button,
+  tableClass,
+  tdClass,
+  thClass,
+  theadClass,
+  trClass,
+} from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
 import { isOvernight } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
@@ -31,12 +38,15 @@ export function ShiftsSection({
 
   const all = shifts.data ?? [];
   const rows = filter === "all" ? all : all.filter((s) => s.status === filter);
-  const count = (f: Filter) => (f === "all" ? all.length : all.filter((s) => s.status === f).length);
+  const count = (f: Filter) =>
+    f === "all" ? all.length : all.filter((s) => s.status === f).length;
 
   async function markNoShow(shift: ShiftDto) {
     setBusyId(shift.id);
     try {
-      await api(`/api/shifts/${encodeURIComponent(shift.id)}/cancel`, { body: { reason: "no-show" } });
+      await api(`/api/shifts/${encodeURIComponent(shift.id)}/cancel`, {
+        body: { reason: "no-show" },
+      });
       notify("success", "Shift cancelled");
       await onChanged();
     } catch (err) {

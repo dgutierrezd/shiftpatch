@@ -50,7 +50,10 @@ export function NotificationsSection({
               <div className="min-w-0">
                 <p className={`text-sm ${n.readAt ? "text-muted" : "font-medium"}`}>
                   {n.readAt === null && (
-                    <span className="mr-1.5 inline-block size-2 rounded-full bg-brand" aria-label="Unread" />
+                    <span
+                      className="mr-1.5 inline-block size-2 rounded-full bg-brand"
+                      aria-label="Unread"
+                    />
                   )}
                   {n.subject}
                 </p>

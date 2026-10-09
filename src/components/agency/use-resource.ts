@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, errorMessage } from "@/lib/api-client";
+import { api, apiList, errorMessage } from "@/lib/api-client";
 
 export interface Resource<T> {
   data: T | undefined;
@@ -18,14 +18,21 @@ interface State<T> {
 /**
  * GETs `path` and refetches whenever `version` changes (bump it after a mutation) and,
  * optionally, every `intervalMs`. Keeps the last good data while a refetch fails.
+ * Pass `listKey` for list routes that wrap their array (e.g. `{ timesheets: [...] }`).
  */
-export function useResource<T>(path: string, version: number, intervalMs?: number): Resource<T> {
+export function useResource<T>(
+  path: string,
+  version: number,
+  intervalMs?: number,
+  listKey?: string,
+): Resource<T> {
   const [state, setState] = useState<State<T>>({ key: path, data: undefined, error: null });
 
   useEffect(() => {
     let active = true;
     const load = () => {
-      api<T>(path)
+      const request = listKey ? (apiList(path, listKey) as Promise<T>) : api<T>(path);
+      request
         .then((data) => {
           if (active) setState({ key: path, data, error: null });
         })
@@ -44,7 +51,7 @@ export function useResource<T>(path: string, version: number, intervalMs?: numbe
       active = false;
       if (timer) clearInterval(timer);
     };
-  }, [path, version, intervalMs]);
+  }, [path, version, intervalMs, listKey]);
 
   const current = state.key === path;
   const data = current ? state.data : undefined;

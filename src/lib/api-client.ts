@@ -46,3 +46,11 @@ export async function api<T>(
 export function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : "Something went wrong. Please try again.";
 }
+
+/** List routes wrap their array in a named key (e.g. `{ shifts: [...] }`), like the spec does. */
+export async function apiList<T>(path: string, key: string): Promise<T[]> {
+  const data = await api<Record<string, unknown>>(path);
+  const list = data?.[key];
+  if (!Array.isArray(list)) throw new ApiError(500, `Unexpected response from ${path}`);
+  return list as T[];
+}

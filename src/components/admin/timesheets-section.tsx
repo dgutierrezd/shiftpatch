@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
-import { Button, tableClass, tdClass, thClass, theadClass, trClass } from "@/components/ui/primitives";
+import {
+  Button,
+  tableClass,
+  tdClass,
+  thClass,
+  theadClass,
+  trClass,
+} from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
 import { isOvernight } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
@@ -40,7 +47,11 @@ export function TimesheetsSection({
   }
 
   return (
-    <AdminSection id="timesheets" title="Timesheets" error={timesheets.data ? timesheets.error : null}>
+    <AdminSection
+      id="timesheets"
+      title="Timesheets"
+      error={timesheets.data ? timesheets.error : null}
+    >
       <TableScroll>
         <table data-testid="timesheet-table" className={tableClass}>
           <caption className="sr-only">Timesheets for all shifts</caption>

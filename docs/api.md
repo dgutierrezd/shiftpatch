@@ -6,6 +6,11 @@ cookie set by login. Errors are always `{ "error": "<message>" }`.
 
 `ShiftDto` = `{ id, agencyId, agencyName, role, date, startTime, endTime, status, claimedBy }`.
 
+**List routes wrap their array in a named key**, like the spec's `{ "shifts": [...] }`:
+`/api/credentials` → `{ credentials }`, `/api/timesheets` → `{ timesheets }`,
+`/api/audit-log` → `{ entries }`, `/api/notifications` → `{ notifications }`.
+The item shapes below describe one element of that array.
+
 ## Auth
 | Route | Who | Response |
 |---|---|---|

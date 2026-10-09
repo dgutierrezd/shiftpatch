@@ -27,7 +27,9 @@ export function AdminDashboard() {
       <div className="flex flex-wrap items-end justify-between gap-4 print:hidden">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Admin dashboard</h1>
-          <p className="mt-1 text-sm text-muted">Shifts, credentials, timesheets and audit across all agencies.</p>
+          <p className="mt-1 text-sm text-muted">
+            Shifts, credentials, timesheets and audit across all agencies.
+          </p>
         </div>
         <div className="flex items-center gap-3 text-sm">
           <span className="flex items-center gap-2 text-muted">
@@ -71,7 +73,9 @@ export function AdminDashboard() {
       <div className="print:hidden">
         <CredentialsSection
           credentials={data.credentials}
-          expiringSoon={data.report.data?.credentialsExpiringSoon ?? (data.report.error ? [] : null)}
+          expiringSoon={
+            data.report.data?.credentialsExpiringSoon ?? (data.report.error ? [] : null)
+          }
           onChanged={refresh}
         />
       </div>

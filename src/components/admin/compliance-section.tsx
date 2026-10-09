@@ -111,7 +111,11 @@ export function ComplianceSection({ onGenerated }: { onGenerated: () => Promise<
       title="Inspection compliance report"
       description="Instead of exporting nurses' medical documents, generate an audited report of license and TB-screening status."
     >
-      <form onSubmit={generate} noValidate className="flex flex-col gap-3 sm:flex-row sm:items-end print:hidden">
+      <form
+        onSubmit={generate}
+        noValidate
+        className="flex flex-col gap-3 sm:flex-row sm:items-end print:hidden"
+      >
         <div className="flex-1">
           <Field
             label="Reason / inspection reference"
@@ -199,7 +203,10 @@ export function ComplianceSection({ onGenerated }: { onGenerated: () => Promise<
                 ))}
                 {report.nurses.length === 0 && (
                   <tr>
-                    <td colSpan={COLUMNS.length} className="px-4 py-8 text-center text-sm text-muted">
+                    <td
+                      colSpan={COLUMNS.length}
+                      className="px-4 py-8 text-center text-sm text-muted"
+                    >
                       No nurses in this report.
                     </td>
                   </tr>

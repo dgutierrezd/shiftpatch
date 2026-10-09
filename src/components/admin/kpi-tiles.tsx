@@ -95,7 +95,10 @@ function AgencyBreakdownList({ rows }: { rows: AgencyBreakdown[] }) {
           const total = a.open + a.filled;
           const filledPct = total === 0 ? 0 : (a.filled / total) * 100;
           return (
-            <li key={a.agencyId} className="grid gap-1.5 sm:grid-cols-[12rem_1fr_auto] sm:items-center sm:gap-4">
+            <li
+              key={a.agencyId}
+              className="grid gap-1.5 sm:grid-cols-[12rem_1fr_auto] sm:items-center sm:gap-4"
+            >
               <span className="truncate text-sm font-medium">{a.agencyName}</span>
               <div
                 className="flex h-2.5 overflow-hidden rounded-full bg-brand-soft"

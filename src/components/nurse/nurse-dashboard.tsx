@@ -11,7 +11,7 @@ import { TimesheetsSection } from "./timesheets-section";
 import type { CredentialDto, NotificationDto, ShiftDto, TimesheetDto } from "./types";
 import { useResource } from "./use-resource";
 
-/** Lists are documented as bare arrays; also accept `{ <key>: [...] }` to be safe. */
+/** List routes wrap their array in a named key (`{ <key>: [...] }`); tolerate a bare array too. */
 function listFrom<T>(raw: unknown, key: string): T[] {
   if (Array.isArray(raw)) return raw as T[];
   if (raw && typeof raw === "object" && key in raw) {

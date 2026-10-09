@@ -30,8 +30,18 @@ function AgencyDashboardContent() {
 
   const shiftsPath = `/api/agencies/${encodeURIComponent(user.agencyId ?? "")}/shifts`;
   const shifts = useResource<AgencyShiftsResponse>(shiftsPath, version, SHIFTS_REFRESH_MS);
-  const timesheets = useResource<TimesheetDto[]>("/api/timesheets", version);
-  const notifications = useResource<NotificationDto[]>("/api/notifications", version);
+  const timesheets = useResource<TimesheetDto[]>(
+    "/api/timesheets",
+    version,
+    undefined,
+    "timesheets",
+  );
+  const notifications = useResource<NotificationDto[]>(
+    "/api/notifications",
+    version,
+    undefined,
+    "notifications",
+  );
 
   // The shifts API only returns the nurse id; timesheets carry the nurse's name.
   const nurseNames = useMemo(
