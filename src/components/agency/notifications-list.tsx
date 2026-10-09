@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/primitives";
+import { Card, EmptyState, SkeletonList } from "@/components/ui/primitives";
 import { formatTimestamp } from "./format";
 import type { NotificationDto } from "./types";
 
@@ -22,11 +22,15 @@ export function NotificationsList({
           Couldn&apos;t load notifications: {error}
         </p>
       ) : items.length === 0 ? (
-        <p className="text-sm text-muted">{loading ? "Loading…" : "No notifications yet."}</p>
+        loading ? (
+          <SkeletonList label="Loading notifications…" rows={2} />
+        ) : (
+          <EmptyState>No notifications yet.</EmptyState>
+        )
       ) : (
         <ul className="divide-y divide-border">
           {items.map((n) => (
-            <li key={n.id} className="flex flex-col gap-0.5 py-3 first:pt-0 last:pb-0">
+            <li key={n.id} className="flex animate-fade flex-col gap-0.5 py-3 first:pt-0 last:pb-0">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <p className={`text-sm ${n.readAt ? "" : "font-semibold"}`}>{n.subject}</p>
                 <time dateTime={n.createdAt} className="text-xs text-muted">

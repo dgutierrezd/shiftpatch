@@ -6,6 +6,8 @@ import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
   Card,
+  rowEnterClass,
+  staggerStyle,
   tableClass,
   tdClass,
   thClass,
@@ -97,8 +99,8 @@ export function TimesheetsTable({
                 empty="No timesheets yet. They appear once a nurse claims one of your shifts."
               />
             ) : (
-              rows.map((t) => (
-                <tr key={t.id} className={trClass}>
+              rows.map((t, i) => (
+                <tr key={t.id} style={staggerStyle(i)} className={`${trClass} ${rowEnterClass}`}>
                   <td className={tdClass}>{t.nurseName}</td>
                   <td className={tdClass}>
                     <div className="whitespace-nowrap">{formatShiftDate(t.date)}</div>

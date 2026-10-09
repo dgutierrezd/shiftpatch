@@ -56,7 +56,10 @@ export function NurseDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Hi, {user.name.split(" ")[0]}</h1>
+        <p className="text-xs font-semibold tracking-wide text-brand uppercase">Nurse</p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+          Hi, {user.name.split(" ")[0]}
+        </h1>
         <p className="mt-1 text-sm text-muted">
           Pick up open shifts, manage the ones you hold, and keep your credentials current.
         </p>

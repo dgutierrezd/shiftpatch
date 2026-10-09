@@ -5,6 +5,10 @@ import { useNotify } from "@/components/notification-banner";
 import { StatusBadge } from "@/components/status-badge";
 import {
   Button,
+  EmptyState,
+  rowEnterClass,
+  SkeletonList,
+  staggerStyle,
   tableClass,
   tdClass,
   thClass,
@@ -70,10 +74,10 @@ export function CredentialsSection({
             </tr>
           </thead>
           <tbody>
-            {rows.map((c) => {
+            {rows.map((c, i) => {
               const isBusy = busy?.id === c.id;
               return (
-                <tr key={c.id} className={trClass}>
+                <tr key={c.id} style={staggerStyle(i)} className={`${trClass} ${rowEnterClass}`}>
                   <td className={tdClass}>{c.nurseName}</td>
                   <td className={tdClass}>{credentialLabel(c.type)}</td>
                   <td className={`${tdClass} whitespace-nowrap tabular-nums`}>
@@ -137,9 +141,11 @@ export function CredentialsSection({
       <div className="mt-6">
         <h3 className="text-sm font-semibold">Expiring within 30 days</h3>
         {expiringSoon === null ? (
-          <p className="mt-2 text-sm text-muted">Loading…</p>
+          <div className="mt-3">
+            <SkeletonList label="Loading expiring credentials…" rows={1} />
+          </div>
         ) : expiringSoon.length === 0 ? (
-          <p className="mt-2 text-sm text-muted">No credentials expire in the next 30 days.</p>
+          <EmptyState>No credentials expire in the next 30 days.</EmptyState>
         ) : (
           <ul className="mt-2 divide-y divide-border rounded-lg border border-border">
             {expiringSoon.map((e) => (

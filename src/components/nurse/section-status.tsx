@@ -1,3 +1,4 @@
+import { SkeletonList } from "@/components/ui/primitives";
 import type { Resource } from "./use-resource";
 
 /**
@@ -21,11 +22,7 @@ export function SectionStatus<T>({ resource, label }: { resource: Resource<T>; l
     );
   }
   if (resource.loading && resource.data === null) {
-    return (
-      <p className="mb-4 text-sm text-muted" aria-live="polite">
-        Loading {label}…
-      </p>
-    );
+    return <SkeletonList label={`Loading ${label}…`} rows={2} />;
   }
   return null;
 }
