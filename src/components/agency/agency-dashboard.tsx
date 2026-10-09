@@ -12,11 +12,10 @@ import type { AgencyShiftsResponse, NotificationDto, TimesheetDto } from "./type
 import { useResource } from "./use-resource";
 
 const SHIFTS_REFRESH_MS = 15_000;
-const NAV = [{ href: "/agency", label: "Shifts" }];
 
 export function AgencyDashboard() {
   return (
-    <AppShell role="agency" nav={NAV}>
+    <AppShell role="agency">
       <AgencyDashboardContent />
     </AppShell>
   );
