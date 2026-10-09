@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
 import { Button, Card } from "@/components/ui/primitives";
-import { api, errorMessage } from "@/lib/api-client";
+import { ApiError, api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { SectionStatus } from "./section-status";
 import { ShiftSummary } from "./shift-summary";
 import type { ShiftDto } from "./types";
@@ -31,8 +32,10 @@ export function OpenShiftsSection({
     try {
       await api<ShiftDto>(`/api/shifts/${encodeURIComponent(id)}/claim`, { method: "POST" });
       notify("success", "Shift claimed");
+      track("shift_claimed");
       onChanged();
     } catch (err) {
+      if (err instanceof ApiError && err.status === 403) track("shift_claim_blocked");
       notify("error", errorMessage(err));
     } finally {
       setClaimingId(null);

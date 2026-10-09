@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import { identifyUser, resetAnalytics } from "@/lib/analytics";
 import { api } from "@/lib/api-client";
 import { HOME_BY_ROLE, type Role, type SessionUser } from "@/lib/session";
 
@@ -42,7 +43,10 @@ export function AppShell({
       .then((me) => {
         if (!active) return;
         if (me.role !== role) router.replace(HOME_BY_ROLE[me.role]);
-        else setUser(me);
+        else {
+          identifyUser(me);
+          setUser(me);
+        }
       })
       .catch(() => router.replace("/login"));
     return () => {
@@ -52,6 +56,7 @@ export function AppShell({
 
   async function signOut() {
     await api("/api/auth/logout", { method: "POST" }).catch(() => undefined);
+    resetAnalytics();
     router.replace("/login");
   }
 

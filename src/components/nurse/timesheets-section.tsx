@@ -15,6 +15,7 @@ import {
   trClass,
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { formatDay, formatHours, isOvernight } from "./format";
 import { SectionStatus } from "./section-status";
 import type { TimesheetDto } from "./types";
@@ -46,6 +47,7 @@ function SubmitHours({ sheet, onChanged }: { sheet: TimesheetDto; onChanged: () 
         body: { workedHours },
       });
       notify("success", "Timesheet submitted");
+      track("timesheet_submitted");
       onChanged();
     } catch (err) {
       notify("error", errorMessage(err));

@@ -14,6 +14,7 @@ import {
   trClass,
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { formatDateTime } from "./format";
 import { AdminSection, TableScroll } from "./section";
 import type { ComplianceNurse, ComplianceReport } from "./types";
@@ -97,6 +98,7 @@ export function ComplianceSection({ onGenerated }: { onGenerated: () => Promise<
       });
       setReport(result);
       notify("success", "Compliance report generated");
+      track("compliance_report_generated");
       await onGenerated(); // the generation is audited — refresh the log
     } catch (err) {
       notify("error", errorMessage(err));

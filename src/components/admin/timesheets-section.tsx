@@ -12,6 +12,7 @@ import {
   trClass,
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { isOvernight } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
 import type { Loadable, TimesheetDto } from "./types";
@@ -38,6 +39,7 @@ export function TimesheetsSection({
     try {
       await api(`/api/timesheets/${encodeURIComponent(t.id)}/approve`, { method: "POST" });
       notify("success", "Timesheet approved");
+      track("timesheet_approved", { by: "admin" });
       await onChanged();
     } catch (err) {
       notify("error", errorMessage(err));

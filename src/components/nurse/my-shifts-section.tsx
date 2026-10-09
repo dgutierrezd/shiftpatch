@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
 import { Button, Card } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { SectionStatus } from "./section-status";
 import { ShiftSummary } from "./shift-summary";
 import type { ShiftDto } from "./types";
@@ -30,6 +31,7 @@ export function MyShiftsSection({
         body: { reason: "advance" },
       });
       notify("success", "Shift cancelled");
+      track("shift_cancelled", { by: "nurse", reason: "advance" });
       onChanged();
     } catch (err) {
       notify("error", errorMessage(err));

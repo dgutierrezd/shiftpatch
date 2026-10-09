@@ -12,6 +12,7 @@ import {
   trClass,
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { isOvernight } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
 import type { Loadable, ShiftDto } from "./types";
@@ -48,6 +49,7 @@ export function ShiftsSection({
         body: { reason: "no-show" },
       });
       notify("success", "Shift cancelled");
+      track("shift_cancelled", { by: "admin", reason: "no-show" });
       await onChanged();
     } catch (err) {
       notify("error", errorMessage(err));

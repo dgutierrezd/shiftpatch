@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useNotify } from "@/components/notification-banner";
 import { Button, Field, Input, Select } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { CREDENTIAL_LABELS } from "./format";
 import type { CredentialDto, CredentialType } from "./types";
 
@@ -56,6 +57,7 @@ export function CredentialUploadForm({
     try {
       await api<CredentialDto>("/api/credentials", { form });
       notify("success", "Credential submitted for verification");
+      track("credential_submitted");
       formRef.current?.reset();
       setType("license");
       onChanged();

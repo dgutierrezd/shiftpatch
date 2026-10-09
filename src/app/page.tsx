@@ -1,69 +1,101 @@
-import Image from "next/image";
+import Link from "next/link";
+import { WaitlistForm } from "@/components/landing/waitlist-form";
 
-export default function Home() {
+const STEPS = [
+  {
+    title: "Post an open shift in seconds",
+    body: "Role, date and hours — that's it. Overnight shifts are handled automatically.",
+  },
+  {
+    title: "Only qualified nurses can pick it up",
+    body: "A nurse whose license or TB screening has lapsed is stopped before the claim goes through.",
+  },
+  {
+    title: "See coverage as it happens",
+    body: "One live board shows which shifts are open, which are filled, and by whom.",
+  },
+];
+
+const PROOF_POINTS = [
+  "No-shows and cancellations reopen the shift immediately",
+  "Every action is recorded: who did what, and when",
+  "Timesheets created automatically for every filled shift",
+  "Inspection-ready compliance report, without exporting medical records",
+];
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex flex-1 flex-col">
+      <header className="border-b border-border bg-surface">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          <span className="text-lg font-bold tracking-tight text-brand">ShiftPatch</span>
+          <Link
+            href="/login"
+            className="rounded-md border border-border px-3.5 py-2 text-sm font-medium hover:bg-slate-50"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Sign in
+          </Link>
         </div>
+      </header>
+
+      <main className="flex-1">
+        <section className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1.2fr_1fr] md:items-center">
+          <div className="space-y-6">
+            <p className="text-sm font-semibold uppercase tracking-wide text-brand">
+              For hospital operations &amp; staffing teams
+            </p>
+            <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+              Fill last-minute nursing shifts without the phone tree.
+            </h1>
+            <p className="max-w-xl text-lg text-muted">
+              ShiftPatch posts your open shifts to qualified nurses, blocks anyone with lapsed
+              credentials, and keeps a live view of who is covering what.
+            </p>
+            <ul className="space-y-2 text-sm">
+              {PROOF_POINTS.map((point) => (
+                <li key={point} className="flex gap-2">
+                  <span aria-hidden className="text-brand">
+                    ✓
+                  </span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
+            <h2 className="text-lg font-semibold">
+              Is short-notice staffing a headache for you too?
+            </h2>
+            <p className="mt-1 text-sm text-muted">
+              We&apos;re talking to operations managers and staffing directors before launch. Leave
+              your details and we&apos;ll show you a walkthrough.
+            </p>
+            <div className="mt-5">
+              <WaitlistForm />
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-border bg-surface">
+          <div className="mx-auto grid max-w-6xl gap-6 px-4 py-14 md:grid-cols-3">
+            {STEPS.map((step, i) => (
+              <div key={step.title} className="space-y-2">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-soft text-sm font-semibold text-brand-strong">
+                  {i + 1}
+                </span>
+                <h3 className="font-semibold">{step.title}</h3>
+                <p className="text-sm text-muted">{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
+
+      <footer className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-4 py-6 text-xs text-muted">
+          ShiftPatch is a pre-launch concept. Demo data only — no real patient or nurse information.
+        </div>
+      </footer>
     </div>
   );
 }

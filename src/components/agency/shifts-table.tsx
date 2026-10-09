@@ -14,6 +14,7 @@ import {
   trClass,
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { CANCELLATION_REASONS } from "@/lib/validation";
 import { formatShiftDate, isOvernight } from "./format";
 import { StatusRow } from "./section-status";
@@ -52,6 +53,7 @@ function CancelControls({ shift, onChanged }: { shift: ShiftDto; onChanged: () =
     try {
       await api(`/api/shifts/${encodeURIComponent(shift.id)}/cancel`, { body: { reason } });
       notify("success", "Shift cancelled");
+      track("shift_cancelled", { by: "agency", reason });
       onChanged();
     } catch (err) {
       notify("error", errorMessage(err));

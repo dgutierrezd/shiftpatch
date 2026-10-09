@@ -12,6 +12,7 @@ import {
   trClass,
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { credentialLabel, expiryHint, formatDateTime } from "./format";
 import { AdminSection, TableScroll, TableStatus } from "./section";
 import type { CredentialDto, ExpiringCredential, Loadable } from "./types";
@@ -40,6 +41,7 @@ export function CredentialsSection({
         body: { decision },
       });
       notify("success", decision === "verified" ? "Credential verified" : "Credential rejected");
+      track("credential_reviewed", { decision });
       await onChanged();
     } catch (err) {
       notify("error", errorMessage(err));

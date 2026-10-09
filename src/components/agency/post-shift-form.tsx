@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNotify } from "@/components/notification-banner";
 import { Button, Card, Field, Input, Select } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { createShiftSchema, SHIFT_ROLES } from "@/lib/validation";
 import { isOvernight, tomorrowLocal } from "./format";
 import type { ShiftDto } from "./types";
@@ -38,6 +39,7 @@ export function PostShiftForm({ onPosted }: { onPosted: () => void }) {
     try {
       await api<ShiftDto>("/api/shifts", { body: parsed.data });
       notify("success", "Shift posted");
+      track("shift_posted");
       onPosted();
     } catch (err) {
       const message = errorMessage(err);

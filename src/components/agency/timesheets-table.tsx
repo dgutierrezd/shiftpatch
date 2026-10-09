@@ -13,6 +13,7 @@ import {
   trClass,
 } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
+import { track } from "@/lib/analytics";
 import { formatShiftDate } from "./format";
 import { StatusRow } from "./section-status";
 import { ShiftTime } from "./shifts-table";
@@ -39,6 +40,7 @@ function ApproveButton({
     try {
       await api(`/api/timesheets/${encodeURIComponent(timesheet.id)}/approve`, { method: "POST" });
       notify("success", "Timesheet approved");
+      track("timesheet_approved", { by: "agency" });
       onChanged();
     } catch (err) {
       notify("error", errorMessage(err));
