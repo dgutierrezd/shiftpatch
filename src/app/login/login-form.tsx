@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useNotify } from "@/components/notification-banner";
 import { Button, Field, Input } from "@/components/ui/primitives";
 import { api, errorMessage } from "@/lib/api-client";
@@ -13,6 +13,18 @@ export function LoginForm() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Next.js hides (not unmounts) this page after sign-in; start fresh when it's shown again.
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    return () => {
+      setPending(false);
+      setError(null);
+      setShowPassword(false);
+      form?.reset();
+    };
+  }, []);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -33,7 +45,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4" noValidate>
+    <form ref={formRef} onSubmit={onSubmit} className="space-y-4" noValidate>
       <Field label="Email" htmlFor="email">
         <Input
           id="email"

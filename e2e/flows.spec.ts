@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { USERS, resetData, signIn } from "./helpers";
+import { PASSWORD, USERS, resetData, signIn } from "./helpers";
 
 test.beforeEach(async ({ request }) => {
   await resetData(request);
@@ -77,4 +77,18 @@ test("single-use test IDs render exactly once", async ({ page }) => {
   for (const id of ["credential-upload-input", "credential-expiry-date-input", "timesheet-table"]) {
     await expect(page.getByTestId(id)).toHaveCount(1);
   }
+});
+
+test("signing out lets another account sign in (no stale page state)", async ({ page }) => {
+  await signIn(page, USERS.maria);
+  await expect(page).toHaveURL(/\/nurse/);
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await expect(page).toHaveURL(/\/login/);
+  const submit = page.getByTestId("login-submit-button");
+  await expect(submit).toBeEnabled();
+  await expect(submit).toHaveText("Sign in");
+  await page.getByTestId("login-email-input").fill(USERS.sunrise);
+  await page.getByTestId("login-password-input").fill(PASSWORD);
+  await submit.click();
+  await expect(page).toHaveURL(/\/agency/);
 });

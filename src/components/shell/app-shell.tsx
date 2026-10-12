@@ -59,7 +59,10 @@ export function AppShell({
   async function signOut() {
     await api("/api/auth/logout", { method: "POST" }).catch(() => undefined);
     resetAnalytics();
-    router.replace("/login");
+    // Full page load: Cache Components keeps visited pages alive in <Activity>, so a
+    // client navigation would keep the previous user's dashboards (and the login form's
+    // "Signing in…" state) in memory.
+    window.location.replace("/login");
   }
 
   return (
